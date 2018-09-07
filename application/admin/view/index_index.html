@@ -1,0 +1,125 @@
+{include file="index/header"}
+<body>
+<div class="header">
+  <div class="main">
+    <a class="logo" href="{:url('index/index')}" title="后台管理">后台管理</a>
+    <div class="nav-user">
+      <a class="avatar">
+        <img src="__ROOT__{$Think.session.userhead}">
+        <cite>{$Think.session.username}</cite>
+        <i>管理员</i>
+      </a>
+      <div class="nav">
+        <a target="_blank" href="__INDEX__"><i class="layui-icon" style="top: 3px; font-size: 24px;padding-right: 8px;">&#xe609;</i>网站首页</a>
+        <a class="logi_logout" href="javascript:void(0)"><i class="layui-icon" style="top: 4px;font-size: 24px;padding-right: 8px;">&#x1006;</i>退出</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="main fly-user-main layui-clear">
+  <ul class="layui-nav layui-nav-tree left_menu_ul">
+  	<li class="layui-nav-item layui-nav-itemed">
+      <a href="javascript:;">论坛管理</a>
+      <dl class="layui-nav-child">
+        <dd><a href="{:url('forum/index')}" target="main"><i class="layui-icon">&#xe630;</i>版块管理</a></dd>
+        <dd><a href="{:url('thread/index')}" target="main"><i class="layui-icon">&#xe63c;</i>帖子管理</a></dd>
+  	    <dd><a href="{:url('comment/index')}" target="main"><i class="layui-icon">&#xe63a;</i>评论管理</a></dd>
+      </dl>
+    </li>
+    <li class="layui-nav-item layui-nav-itemed">
+      <a href="javascript:;">商品管理</a>
+      <dl class="layui-nav-child">
+        <dd><a href="{:url('category/index')}" target="main"><i class="layui-icon">&#xe630;</i>分类管理</a></dd>
+        <dd><a href="{:url('goods/index')}" target="main"><i class="layui-icon">&#xe63c;</i>商品管理</a></dd>
+        <dd><a href="{:url('goods/stale')}" target="main"><i class="layui-icon">&#xe63c;</i>过期商品</a></dd>
+      </dl>
+    </li>
+    <li class="layui-nav-item layui-nav-itemed">
+      <a href="javascript:;">采集管理</a>
+      <dl class="layui-nav-child">
+        <dd><a href="{:url('robotxuanpin/index')}" target="main"><i class="layui-icon">&#xe609;</i>自选高佣采集</a></dd>
+        <dd><a href="{:url('robotgaoyongjin/index')}" target="main"><i class="layui-icon">&#xe609;</i>一键高佣采集</a></dd>
+        <dd><a href="{:url('robothaoquan/index')}" target="main"><i class="layui-icon">&#xe609;</i>好券清单采集</a></dd>
+        <dd><a href="{:url('robotlanlan/index')}" target="main"><i class="layui-icon">&#xe609;</i>懒懒采集</a></dd>
+        <dd><a href="{:url('robothaodanku/index')}" target="main"><i class="layui-icon">&#xe609;</i>好单库采集</a></dd>                            
+        <dd><a href="{:url('robotdtk/index')}" target="main"><i class="layui-icon">&#xe609;</i>大淘客采集</a></dd>
+        <dd><a href="{:url('robotxuanpinku/index')}" target="main"><i class="layui-icon">&#xe609;</i>选品库采集</a></dd>                    
+        <dd><a href="{:url('robotalimama/index')}" target="main"><i class="layui-icon">&#xe609;</i>超级搜索采集</a></dd>
+      </dl>
+    </li>        
+  	<li class="layui-nav-item" style="background-color: #444a5d;">
+      <a href="javascript:;">综合管理</a>
+      <dl class="layui-nav-child">
+        <dd><a href="{:url('nav/index')}" target="main"><i class="layui-icon">&#xe64d;</i>菜单管理</a></dd>      
+  	    <dd><a href="{:url('point/index')}" target="main"><i class="layui-icon">&#xe62c;</i>积分管理</a></dd>
+        <dd><a href="{:url('banner/index')}" target="main"><i class="layui-icon">&#xe60d;</i>广告管理</a></dd>
+  	    <dd><a href="{:url('links/index')}" target="main"><i class="layui-icon">&#xe64d;</i>友情链接</a></dd>
+        <dd><a href="{:url('member/index')}" target="main"><i class="layui-icon">&#xe612;</i>会员管理</a></dd>
+      </dl>
+    </li>
+  	<li class="layui-nav-item layui-nav-itemed">
+      <a href="javascript:;">系统管理</a>
+      <dl class="layui-nav-child">
+        <dd><a href="{:url('config/index')}" target="main"><i class="layui-icon">&#xe620;</i>网站配置</a></dd>
+  	    <dd><a class="update_cache" href="javascript:void(0)"><i class="layui-icon">&#xe640;</i>清理缓存</a></dd>
+      </dl>
+    </li>
+  </ul>
+</div>
+<div class="layui-body iframe-container">
+  <iframe class="admin-iframe" id="admin-iframe" name="main" src="{:url('index/home')}"></iframe>
+</div>
+{include file="index_footer"}
+<script type="text/javascript">
+layui.use(['layer', 'element','jquery'], function(){
+  var layer = layui.layer
+  ,element = layui.element()
+  ,jq = layui.jquery;
+  
+  jq('.left_menu_ul .layui-nav-item').click(function(){
+    jq('.left_menu_ul .layui-nav-item').removeClass('layui-this');
+    jq(this).addClass('layui-this');
+    jq("#iframe-mask").show();
+    jq("#admin-iframe").load(function(){   
+      jq("#iframe-mask").fadeOut(100);
+    });
+  });
+
+  jq('.update_cache').click(function(){
+    loading = layer.load(2, {
+      shade: [0.2,'#000']
+    });
+    jq.getJSON('{:url("index/update")}',function(data){
+      if(data.code == 200){
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+          location.reload();
+        });
+      }else{
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+      }
+    });
+  });
+
+  jq('.logi_logout').click(function(){
+    loading = layer.load(2, {
+      shade: [0.2,'#000']
+    });
+    jq.getJSON('{:url("login/logout")}',function(data){
+      if(data.code == 200){
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+          location.reload();
+        });
+      }else{
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+      }
+    });
+  });
+
+});
+</script>
+</body>
+</html>

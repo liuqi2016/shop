@@ -1,0 +1,87 @@
+<div class="layui-footer footer">
+  <div class="layui-main">
+    <div class="qr-code">
+      <img src="{:config('web.WEB_QRCODE')}" alt="二维码">
+      <p>关注微信 及时抢</p>
+    </div>
+    <div class="thanks"></div>
+    <div class="links" style="margin-top: 20px;">
+      <p>友情链接：</p>
+      <div class="links-main">
+      {volist name="LinksList" id="vo"}
+        <a href="{$vo.links}" target="_blank">{$vo.name}</a>
+      {/volist}        
+      </div>     
+    </div> 
+    <div class="service">
+      <a href="tencent://message/?uin={:config('web.WEB_QQ')}&Site={:config('web.WEB_COM')}&Menu=yes" class="contact-us" target="_blank" rel="nofollow">联系我们</a>
+      <span class="working-time">
+          <p>周一至周日</p>
+          <p>9:00-21:00</p>
+      </span>
+    </div>
+    <div class="company">{:config('web.WEB_ICP')} | Copyright © 2010-2017, <a href="/">{:config('web.WEB_COM')}</a>, All Rights Reserved</div>  
+  </div>
+</div>
+<script src="__HOME__/mods/jquery.lazyload.js" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+$(function() {
+  $("img.lazy").lazyload({effect: "fadeIn"});
+});
+</script>
+<script type="text/javascript">
+;$(function(){
+  $('#ks').bind('input propertychange', function() {
+      var ajaxUrl = "{:url('AjaxRequest/suggest')}",
+          ks = $(this).val();
+      $.getJSON(ajaxUrl,{ks:ks},function(result){
+        if (result.code == 1) {
+          if (ks) {
+            $('.suggest').addClass("dropdown");
+            $(".suggest").html(result.data);
+            $("#suggest ul li a").each(function() {
+              $(this).on('click', function(){
+                var  q = $(this).attr('data-ks');
+                $('#ks').val(q);
+                $('.suggest').removeClass("dropdown");
+            });               
+          });
+        }
+      }
+    }) 
+  });
+  $("body").on('click',function() {
+      $('.dropdown-menu').remove();
+  });    
+});
+</script>
+<script src="__ADMIN__/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript">
+layui.use(['layer','element', 'form', 'util','jquery'], function(){
+  var layer = layui.layer
+  ,jq = layui.jquery
+  ,element = layui.element()
+  ,util = layui.util;
+  element.on('nav(layui)', function(elem){
+    console.log(elem)
+  });
+  util.fixbar();
+  jq('.logi_logout').click(function(){
+    loading = layer.load(2, {
+      shade: [0.2,'#000']
+    });
+    jq.getJSON('{:url("login/logout")}',function(data){
+      if(data.code == 200){
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+          location.reload();
+        });
+      }else{
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+      }
+    });
+  });
+});
+</script>
+{:html_entity_decode(config('web.WEB_TDJ'))}

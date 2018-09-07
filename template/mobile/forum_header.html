@@ -1,0 +1,57 @@
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link href="/favicon.ico" rel="shortcut icon">
+<link rel="stylesheet" href="__ADMIN__/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="__HOME__/css/forum.css" media="all">
+<script type="text/javascript"  src="__ADMIN__/js/jquery-1.11.1.min.js"></script>
+{:html_entity_decode(config('web.WEB_TJCODE'))}
+</head>
+<body>
+<div class="header">
+  <div class="main">
+    <a class="logo" href="/" title="{:config('web.WEB_TIT')}">
+      <img src="{:config('web.WEB_FORUMLOGO')}" alt="{:config('web.WEB_TIT')}">
+    </a>
+    <div class="nav">
+      {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/forum.html">{else/}<a href="__INDEX__/forum.html">{/if}
+         <i class="layui-icon">&#xe609;</i>社区首页
+      </a>       
+      {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/choice.html">{else/}<a href="__INDEX__/choice.html">{/if}
+         <i class="iconfont icon-wenda"></i>精贴
+      </a>     
+    </div>
+    <div class="nav-user">
+      {if condition="$Think.session.username neq ''"}
+      <!-- 登入后的状态 -->
+      {if condition="config('web.WEB_URL') eq 1"}<a class="avatar" href="__ROOT__/home/{$Think.session.userid}.html">{else/}<a class="avatar" href="__INDEX__/home/{$Think.session.userid}.html">{/if}
+        <img src="__ROOT__{$Think.session.userhead}">
+        <cite>{$Think.session.username}</cite>
+        <i>{include file="public/gradeh"}</i>
+      </a>
+      <div class="nav">
+        {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/user/set.html">{else/}<a href="__INDEX__/user/set.html">{/if}<i class="iconfont icon-shezhi"></i>设置</a>
+        <a class="logi_logout" href="javascript:void(0)"><i class="iconfont icon-tuichu" style="top: 0; font-size: 22px;"></i>退了</a>
+      </div>
+      {else /}
+      <!-- 未登入状态 -->
+      {if condition="config('web.WEB_URL') eq 1"}<a class="unlogin" href="__ROOT__/login/index.html">{else/}<a class="unlogin" href="__INDEX__/login/index.html">{/if}<i class="iconfont icon-touxiang"></i></a>
+      <span>
+      {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/login/index.html">{else/}<a href="__INDEX__/login/index.html">{/if}
+      登入</a>
+      {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/login/reg.html">{else/}<a href="__INDEX__/login/reg.html">{/if}
+      注册</a>
+      </span>
+      <p class="out-login">
+        <a href="" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-qq" title="QQ登入"></a>
+        <a href="" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-weibo" title="微博登入"></a>
+      </p> 
+      {/if}
+    </div>
+  </div>
+</div>
+
+

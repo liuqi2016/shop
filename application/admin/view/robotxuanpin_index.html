@@ -1,0 +1,214 @@
+{include file="index/header"}
+<body>
+<div class="fly-panel fly-panel-user">
+  <div class="tpt-admin"> 
+    <div style="width: 100%;float: left;">
+      <form class="layui-form" action="" method="get">
+        <div class="layui-form-item" style="float: left;">
+          <div class="layui-inline">
+            <label class="layui-form-label" style="width: auto;padding: 9px 15px 9px 0px;">价格</label>
+            <div class="layui-input-inline" style="width: 80px;">
+              <input type="text" name="startPrice" value="<?php echo input('startPrice');?>" placeholder="￥" class="layui-input">
+            </div>
+            <div class="layui-form-mid"> - </div>
+            <div class="layui-input-inline" style="width: 80px;">
+              <input type="text" name="endPrice" value="<?php echo input('endPrice');?>" placeholder="￥" class="layui-input">
+            </div>          
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">佣金百分比</label>
+            <div class="layui-input-inline" style="width: 80px;">
+              <input type="text" name="startTkRate" value="<?php echo input('startTkRate');?>" placeholder="10" class="layui-input">
+            </div>
+            <div class="layui-form-mid"> - </div>
+            <div class="layui-input-inline" style="width: 80px;">
+              <input type="text" name="endTkRate" value="<?php echo input('endTkRate');?>" placeholder="90" class="layui-input">
+            </div>          
+          </div>
+          <div class="layui-inline" style="width: 180px;">
+            <label class="layui-form-label">商品月销量</label>
+            <div class="layui-input-block">
+              <input type="text" name="startBiz30day" value="<?php echo input('startBiz30day');?>" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">排序方式</label>
+            <div class="layui-input-block" style="width: 150px;">
+                <select name="sort">
+                  <option value=" ">综合排序</option>
+                  <option {if condition="input('sort') eq '1'"}selected="selected"{/if} value="1">收入比率从高到低</option>
+                  <option {if condition="input('sort') eq '7'"}selected="selected"{/if} value="7">月支出佣金从高到低</option>
+                  <option {if condition="input('sort') eq '5'"}selected="selected"{/if} value="5">月推广量从高到低</option>
+                  <option {if condition="input('sort') eq '9'"}selected="selected"{/if} value="9">销量从高到低</option>
+                  <option {if condition="input('sort') eq '3'"}selected="selected"{/if} value="3">价格从高到低</option>
+                  <option {if condition="input('sort') eq '4'"}selected="selected"{/if} value="4">价格从低到高</option>
+                </select>
+            </div>
+          </div>
+          <div class="layui-inline">
+            <input placeholder="输入关键字或商品链接" name="keyword" value="<?php echo input('keyword');?>" type="text" class="layui-input" style="float: left;margin-right: 10px;width: 240px;">
+            <button class="layui-btn" style="float: left;margin-bottom: 0px;" value="查询" type="submit">查询</button>
+            <a href="http://pub.alimama.com" style="margin-left: 5px;" class="layui-btn layui-btn-warm" target="_blank"><i class="layui-icon">&#xe638;</i> 登录阿里妈妈</a>
+          </div>
+        </div>
+      </form>
+    </div>
+    <form class="layui-form" enctype="multipart/form-data" method="post">
+      <table width="100%">
+        <tr>
+          <th width="3%" align="center"><input type="checkbox" name="checkAll" lay-filter="checkAll"></th>
+          <th width="5%" align="center">商品ID</th>
+          <th width="1%" align="center">主图</th>
+          <th width="15%" align="center">商品标题</th>
+          <th width="5%" align="center">在售价</th>
+          <th width="5%" align="center">券后价</th>
+          <th width="5%" align="center">优惠卷</th> 
+          <th width="5%" align="center">券总量</th>
+          <th width="5%" align="center">券剩余量</th>
+          <th width="5%" align="center">佣金</th>
+          <th width="5%" align="center">销量</th>  
+          <th width="5%" align="center">定向计划</th>
+          <th width="5%" align="center">商家属性</th>
+          <th width="7%" align="center">剩余时间</th>
+          <th width="7%" align="center">基本操作</th>
+        </tr>
+        {empty name="RobotxuanpinList"}
+        <tr style="height: 0px;border: none;">
+          <td style="height: 0px;border: none;"></td>
+          <td style="height: 0px;border: none;"></td>
+          <td style="height: 0px;border: none;"><img src="__ROOT__/public/img/no_data.jpg" width="50" height="0"></td>
+        </tr>        
+        {else /}        
+        {volist name="RobotxuanpinList" id="vo"}
+        {if condition="$vo['yes'] eq '0'"}
+  	    <tr>
+    	    <td align="center"><input type="checkbox" name="ids[{$vo.numIid}]" lay-filter="checkOne" value="{$vo.numIid}"></td>
+    		  <td align="center">{$vo.numIid}</td>
+          <td align="center"><a target="_blank" href="#"><img src="{$vo.pic}" width="50"></a></td>
+          <td style="padding-left: 20px;"><a target="_blank" href="__INDEX__/dtl/{$vo.numIid}.html"><?php echo mb_substr(strip_tags(htmlspecialchars_decode($vo['title'])), 0, 20, 'utf-8');?>...</a></td>  
+          <td align="center">{$vo.price}</td>    
+          <td align="center">{$vo.couponPrice}</td>    
+          <td align="center">{$vo.couponAmount}</td>
+          <td align="center">{$vo.couponTotalcount}</td>
+          <td align="center">{$vo.couponRemaincount}</td>
+          <td align="center">{$vo.commission}</td>
+          <td align="center">{$vo.volume}</td>           
+          <td align="center">{if condition="$vo.dxjhType eq 1"}是{else /}否{/if}</td>
+          <td align="center">{if condition="$vo.userType eq 1"}天猫{else /}淘宝{/if}</td> 
+          <td align="center">剩余{$vo.dayLeft}天</td>                     
+          <td align="center">
+            <a class="layui-btn layui-btn-mini collect_one" member-id="{$vo.numIid}" title="采集" title="{$vo.title}"><i class="layui-icon">&#xe628;</i> 采集</a>
+          </td>
+        </tr>
+        {/if}
+        {/volist}
+        {/empty}
+      </table>
+      <div class="layui-form-item">
+        <div style="margin-top: 20px;float: left;">
+          <button class="layui-btn" lay-submit lay-filter="collect_all">采集选中</button>
+        </div>
+        <div class="pages" style="float: right;">{$RobotxuanpinPages}</div>
+      </div>
+    </form>
+  </div>
+</div>
+{include file="index_footer"}
+<script type="text/javascript">
+layui.use('form',function(){
+  var form = layui.form()
+  ,jq = layui.jquery;
+
+  jq('.collect_one').click(function(){
+    var name = jq(this).attr('title');
+    var id = jq(this).attr('member-id');
+    layer.confirm('<div class="layui-form-item" style="width: 300px;margin-top: 20px;"><label class="layui-form-label">入库分类：</label><div class="layui-input-block"><select id="layui-cid" name="cid" style="width: 150px;padding: 9px 15px;">{volist name="CategoryList" id="vo"}{if condition="$vo.open eq 1"}<option value="{$vo.id}">{$vo.name}</option>{/if}{/volist}</select></div></div>', function(index){
+        var cid = jq("#layui-cid").val();
+        collect_layer_index = layer.open({
+          type:0,
+          content:'开始采集,正在准备数据，请稍候！',
+          btn: false,
+          area: ['300px', '150px'],
+          cancel:function(index,layero){
+            layer.close(index);
+            location.reload();
+          }
+        });
+        jq.post('{:url("robotxuanpin/collect_one")}',{id:id,cid:cid},function(data){
+          if(data.code == 200){
+            $('.layui-layer-content').text(data.msg);
+          }else{
+            $('.layui-layer-content').text(data.msg);
+          }
+        });
+    });   
+  });
+  
+  form.on('checkbox(checkAll)', function(data){
+    if(data.elem.checked){
+      jq("input[type='checkbox']").prop('checked',true);
+    }else{
+      jq("input[type='checkbox']").prop('checked',false);
+    }
+    form.render('checkbox');
+  });  
+
+  form.on('checkbox(checkOne)', function(data){
+    var is_check = true;
+    if(data.elem.checked){
+      jq("input[lay-filter='checkOne']").each(function(){
+        if(!jq(this).prop('checked')){ is_check = false; }
+      });
+      if(is_check){
+        jq("input[lay-filter='checkAll']").prop('checked',true);
+      }
+    }else{
+      jq("input[lay-filter='checkAll']").prop('checked',false);
+    } 
+    form.render('checkbox');
+  });
+
+  form.on('submit(collect_all)', function(data){
+    var is_check = false;
+    jq("input[lay-filter='checkOne']").each(function(){
+      if(jq(this).prop('checked')){ is_check = true; }
+    });
+    if(!is_check){
+      layer.msg('请选择数据', {icon: 2,anim: 6,time: 1000});
+      return false;
+    }
+    layer.confirm('<div class="layui-form-item" style="width: 300px;margin-top: 20px;"><label class="layui-form-label">入库分类：</label><div class="layui-input-block"><select id="layui-cid" name="cid" style="width: 150px;padding: 9px 15px;">{volist name="CategoryList" id="vo"}{if condition="$vo.open eq 1"}<option value="{$vo.id}">{$vo.name}</option>{/if}{/volist}</select></div></div>', function(index){
+      var cid = jq("#layui-cid").val();
+      collect_layer_index = layer.open({
+        type:0,
+        content:'开始采集,正在准备数据，请稍候！',
+        btn: false,
+        area: ['300px', '150px'],
+        cancel:function(index,layero){
+          layer.close(index);
+          location.reload();
+        }
+      });
+      var param = data.field;
+      param.cid = cid;
+      jq.post('{:url("robotxuanpin/collect_all")}',param,function(data){
+        if(data.code == 200){
+/*          layer.close(collect_layer_index);
+          layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+            location.reload();
+          });*/
+          $('.layui-layer-content').text(data.msg);
+        }else{
+/*          layer.close(collect_layer_index);
+          layer.msg(data.msg, {icon: 2,anim: 6, time: 1000});*/
+          $('.layui-layer-content').text(data.msg);
+        }
+      });
+    });
+    return false;
+  });
+
+})
+</script>
+</body>
+</html>

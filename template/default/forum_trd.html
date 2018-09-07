@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{$Thread.title} - {:config('web.WEB_AUT')}</title>
+<meta name="keywords" content="{$Thread.keywords}">
+<meta name="description" content="{$Thread.description}">
+{include file="forum/header"}
+<link rel="stylesheet" href="__ADMIN__/wangEditor/css/wangEditor.min.css">
+<script type="text/javascript" src="__ADMIN__/wangEditor/js/wangEditor.min.js"></script>
+<style type="text/css">
+.wangEditor-menu-container .menu-item a {padding: 12px 0;}
+.wangEditor-menu-container .menu-item {height: 37px;width: 37px;}
+.wangEditor-menu-container .menu-group {padding: 0;}
+.wangEditor-container {border: 1px solid #e6e6e6;}
+</style>
+<div class="main layui-clear">
+  <div class="wrap">
+    <div class="content detail">
+      <!-- 详情 -->
+      <div class="fly-panel detail-box">
+        <h1>{$Thread.title}</h1>
+        <div class="fly-tip fly-detail-hint">
+          <span>{if condition="config('web.WEB_URL') eq 1"}<a style="color:#fff;" class="jie-user" href="__ROOT__/frm/{$Thread.cid}.html">{else/}<a style="color:#fff;" class="jie-user" href="__INDEX__/frm/{$Thread.cid}.html">{/if}{$Thread.name}</a></span>
+          {if condition="$Thread['settop'] eq 1"}<span style="margin-right: 4px;" class="fly-tip-stick">置顶</span>{/if}
+          {if condition="$Thread['choice'] eq 1"}<span class="fly-tip-jing">精帖</span>{/if}
+          <div class="fly-list-hint"> 
+            <i class="iconfont" title="回答">&#xe60c;</i> {$Thread.reply}
+            <i class="iconfont" title="人气">&#xe60b;</i> {$Thread.view}
+          </div>
+        </div>
+        <div class="detail-about">
+          {if condition="config('web.WEB_URL') eq 1"}<a class="jie-user" href="__ROOT__/home/{$Thread.userid}.html">{else/}<a class="jie-user" href="__INDEX__/home/{$Thread.userid}.html">{/if}
+            <img src="__ROOT__{$Thread.userhead}" alt="{$Thread.username}">
+            <cite>
+              {$Thread.username}
+              <em>{$Thread.time|date="Y-m-d h:i:s",###}</em>
+            </cite>
+          </a>
+          <div class="detail-hits">
+            <span class="">{include file="public/grades"}</span>
+            <span class="">积分：{$Thread.point}</span>
+            {if condition="$Think.session.username neq ''"}
+              {if condition="$Think.session.username eq $Thread.username"}
+                <span class="layui-btn layui-btn-mini jie-admin" type="edit">{if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/edit/{$Thread.id}.html">{else/}<a href="__INDEX__/edit/{$Thread.id}.html">{/if}编辑此贴</a></span>
+              {/if}            
+            {/if} 
+            <span class="layui-btn layui-btn-mini jie-admin " type="collect" data-type="add">收藏</span>            
+          </div>
+        </div>
+        <div class="detail-body photos" style="margin-bottom: 20px;">
+          <div class="wangEditor-container cl" style="border: 0px solid #e6e6e6;">
+            <div class="wangEditor-txt" style="padding: 0;margin-top: 0;">{$content}</div>
+          </div>
+        </div>
+      </div>
+      <!-- 隐藏内容 -->
+      {if condition="$Thread.secret neq ''"}
+        <div class="fly-panel detail-box">
+          {if condition="$Think.session.username neq ''"}
+            <?php $bool = 0; ?>
+            {volist name="CommentList" id="vo"}
+              {if condition="$Think.session.username eq $vo.username"}
+                <?php $bool = 1; ?>
+              {/if}
+            {/volist}
+            {if condition="$bool eq '1'"}
+              <div class="secret">
+                {$Thread.secret}
+              </div>
+            {else/} 
+              <div class="secret">
+                本帖隐藏的内容需要回复才可以浏览
+              </div>
+            {/if}  
+          {else/} 
+            <div class="secret">
+              本帖隐藏的内容需要回复才可以浏览
+            </div>
+          {/if}
+        </div>       
+      {/if}
+      <!-- 回复列表 -->
+      <div class="fly-panel detail-box" style="padding-top: 0;">
+        <a name="comment"></a>
+        <ul class="jieda photos" id="jieda">
+          {volist name="CommentList" id="vo"}
+          <li class="jieda-daan" id="tpt{$vo.id}">
+            <div class="detail-about detail-about-reply">
+               {if condition="config('web.WEB_URL') eq 1"}<a class="jie-user" href="__ROOT__/home/{$vo.userid}.html">{else/}<a class="jie-user" href="__INDEX__/home/{$vo.userid}.html">{/if}
+                <img src="__ROOT__{$vo.userhead}" alt="{$vo.username}">
+                <cite>
+                  <i>{$vo.username}</i>
+                  {include file="public/grade"}
+                </cite>
+              </a>
+              <div class="detail-hits">
+                <span>{$vo.time|date="Y-m-d h:i:s",###}</span>
+              </div>
+              <!-- <i class="iconfont icon-caina" title="最佳答案"></i> -->
+            </div>
+            <div class="detail-body jieda-body">
+              <?php echo htmlspecialchars_decode($vo['content']);?>
+            </div>
+            <div class="jieda-reply">
+              <span class="jieda-zan" type="zan"><i class="iconfont icon-zan"></i><em>0</em></span>
+              <a href="#pinglun"><span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span></a>
+              <div class="jieda-admin">
+                {if condition="$Think.session.userid eq 1"}<a class="del_btn" member-id="{$vo.id}" title="删除" nickname="此评论吗"><span type="del"><i class="layui-icon">&#xe640;</i>删除</span></a>{/if}
+                <a href="#"><span class="jieda-accept" type="accept"><i class="layui-icon">&#xe60c;</i>采纳</span></a>
+              </div>
+            </div>
+          </li>
+          {/volist}
+        </ul>
+        <!-- 分页导航 -->
+        <div style="text-align: center">
+          <div class="laypage-main">
+            {$CommentList->render()}
+          </div>
+        </div>        
+        <!-- 回复 -->
+        <div id="pinglun" class="layui-form layui-form-pane">
+          <form>
+            <div class="layui-form-item layui-form-text">
+              <div class="layui-input-block">
+                 <textarea id="textarea" name="content" required lay-verify="required" style="width: 100%;height:150px;"></textarea>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <button class="layui-btn" lay-submit="" lay-filter="comment_add">提交回复</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {include file="forum/right"}
+</div>
+{include file="forum/footer"}
+<script type="text/javascript">
+  var editor = new wangEditor('textarea');
+  editor.config.uploadImgUrl = '{:url("index/comment/doUploadPic")}';
+  editor.config.uploadImgFileName = 'FileName';
+  editor.config.menus = [
+    'bold',
+    'underline',
+    'italic',
+    'strikethrough',
+    'forecolor',
+    'link',
+    'unlink',
+    'emotion',
+    'img',
+    'video',
+    'insertcode',
+    'fullscreen',
+  ];
+  editor.config.pasteText = true;
+  editor.create();
+</script>
+<script>
+layui.use('form', function(){
+  var form = layui.form()
+  ,jq = layui.jquery;
+
+  jq('.del_btn').click(function(){
+    var name = jq(this).attr('nickname');
+    var id = jq(this).attr('member-id');
+    layer.confirm('确定删除【'+name+'】?', function(index){
+      loading = layer.load(2, {
+        shade: [0.2,'#000']
+      });
+      jq.post('{:url("index/comment/dels")}',{'id':id},function(data){
+        if(data.code == 200){
+          layer.close(loading);
+          layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+            location.reload();
+          });
+        }else{
+          layer.close(loading);
+          layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+        }
+      });
+    });
+  });
+
+  form.on('submit(comment_add)', function(data){
+    loading = layer.load(2, {
+      shade: [0.2,'#000']
+    });
+    var param = data.field;
+    jq.post('{:url("index/comment/add",array("id"=>$Thread.id))}',param,function(data){
+      if(data.code == 200){
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+          location.reload();
+        });
+      }else{
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+      }
+    });
+    return false;
+  });
+})
+</script>
+</body>
+</html>

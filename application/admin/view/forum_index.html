@@ -1,0 +1,107 @@
+{include file="index/header"}
+<body>
+<div class="fly-panel fly-panel-user">
+  <div class="tpt-admin">
+    <div class="tpt-btn">
+      <a href="{:url('forum/add')}" class="layui-btn"><i class="layui-icon">&#xe608;</i> 添加版块</a>
+    </div>
+    <form method="post">
+      <table width="100%">
+        <tr>
+          <th width="5%" align="center">版块ID</th>
+          <th width="20%" align="center">版块名称</th>
+          <th width="10%" align="center">是否开启</th>
+          <th width="10%" align="center">是否显示</th>
+          <th width="10%" align="center">版块图片</th>
+          <th width="25%" align="center">版块链接</th>
+          <th width="10%" align="center">添加时间</th>
+          <th width="10%" align="center">基本操作</th>
+        </tr>
+        {volist name="ForumList" id="vo"}
+        <tr>
+          <td align="center">{$vo.id}</td>
+          <td align="center"><a target="_blank" href="__INDEX__/frm/{$vo.id}.html">{if condition="$vo['level'] neq 0"}└─ {/if}{$vo.name}</a></td>
+          <td align="center">
+            <a change="{$vo.id}" onclick="changeopen(this);" {if condition="$vo['open'] eq 1"}class="layui-unselect layui-form-switch layui-form-onswitch"{else /}class="layui-unselect layui-form-switch"{/if}><em>开启</em><i></i></a>
+          </td>          
+          <td align="center">
+            <a change="{$vo.id}" onclick="changeshow(this);" {if condition="$vo['show'] eq 1"}class="layui-unselect layui-form-switch layui-form-onswitch"{else /}class="layui-unselect layui-form-switch"{/if}><em>显示</em><i></i></a>
+          </td>
+          <td align="center">{if condition="$vo['pic'] neq ''"}<img src="__ROOT__{$vo.pic}" height="25">{else /}暂无图片{/if}</td>
+          <td style="padding-left: 20px;">__INDEX__/frm/{$vo.id}.html</td>
+          <td align="center">{$vo.time|date="Y-m-d",###}</td>
+          <td align="center">
+            <a class="layui-btn layui-btn-mini layui-btn-warm" href="{:url('forum/edit',array('id'=>$vo['id']))}">修改</a> <a class="layui-btn layui-btn-mini layui-btn-danger del_btn" member-id="{$vo.id}" title="删除" nickname="{$vo.name}">删除</a>
+          </td>
+        </tr>
+        {/volist}
+      </table>
+    </form>
+  </div>
+</div>
+{include file="index_footer"}
+<script type="text/javascript">
+function changeopen(o){
+  var change=$(o).attr("change");
+  $.ajax({
+    type:"post",
+    dataType:"json",
+      data:{change:change},
+    url:"{:url('forum/changeopen')}",
+    success:function(data){
+      if(data == 1){
+        $(o).attr("class","layui-unselect layui-form-switch");
+        }else{
+        $(o).attr("class","layui-unselect layui-form-switch layui-form-onswitch");
+        }
+    }
+  });
+}
+function changeshow(o){
+  var change=$(o).attr("change");
+  $.ajax({
+	  type:"post",
+	  dataType:"json",
+      data:{change:change},
+	  url:"{:url('forum/changeshow')}",
+	  success:function(data){
+		  if(data == 1){
+			  $(o).attr("class","layui-unselect layui-form-switch");
+	      }else{
+			  $(o).attr("class","layui-unselect layui-form-switch layui-form-onswitch");
+	      }
+	  }
+  });
+}
+</script>
+<script type="text/javascript">
+layui.use('form',function(){
+  var form = layui.form()
+  ,jq = layui.jquery;
+
+  jq('.del_btn').click(function(){
+    var name = jq(this).attr('nickname');
+    var id = jq(this).attr('member-id');
+    layer.confirm('确定删除【'+name+'】?', function(index){
+      loading = layer.load(2, {
+        shade: [0.2,'#000']
+      });
+      jq.post('{:url("forum/dels")}',{'id':id},function(data){
+        if(data.code == 200){
+          layer.close(loading);
+          layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+            location.reload();
+          });
+        }else{
+          layer.close(loading);
+          layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+        }
+      });
+    });
+  });
+})
+</script>
+</body>
+</html>
+
+

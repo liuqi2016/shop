@@ -1,0 +1,92 @@
+<link href="__ROOT__/favicon.ico" rel="icon" type="image/x-icon"/>
+<link rel="stylesheet" href="__ADMIN__/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="__HOME__/css/home.css" media="all">
+<script src="__HOME__/mods/jquery-1.10.2.min.js" charset="utf-8"></script>
+<script src="__HOME__/mods/index.js" charset="utf-8"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $.slide("#slide");
+  //$.slide("#slide-01");//多个幻灯片ID
+});
+</script>
+{:str_replace("&apos;", "'", html_entity_decode(config('web.WEB_TJCODE')))}
+</head>
+<body class="site-home" id="LAY_home" style="background-color: #f6f6f6;">
+{volist name="BannerList" id="vo"}
+  {if condition="$vo.identity eq 'top-banner'"}
+  <div class="top-banner"><a href="{$vo.links}" target="_blank"><img src="{$vo.pic}" width="100%;" alt="{$vo.title}" /></a></div>
+  {/if}
+{/volist}
+<div class="toolbar">
+  <div class="layui-main">
+  <div class="top-nav">
+    <ul>
+    {volist name="NavList" id="vo"}
+      {if condition="($vo.type eq '1') and ($vo.identity eq 'top')"}
+      <li><a href="{$vo.links}" target="_blank">{$vo.name}</a></li>
+      {/if}
+    {/volist}  
+    </ul>
+  </div>  
+    <div class="right-show">
+      <div class="login">
+      {if condition="$Think.session.username neq ''"}
+        <a class="avatar" href="{:url('home/'.$Think.session.userid)}">
+          <cite>{$Think.session.username}</cite>
+          <i>{include file="public/gradeh"}</i>
+        </a>
+        <div class="logout" style="float: left;">
+          <a href="{:url('user/set')}"><i class="iconfont icon-shezhi"></i>设置</a>
+          <a class="logi_logout" href="javascript:void(0)"><i class="iconfont icon-tuichu" style="top: 0; font-size: 22px;"></i>退了</a>
+        </div>　|
+      {else /}
+        <a href="{:url('login/index')}" rel="nofollow">登录</a>
+        <a href="{:url('login/reg')}" rel="nofollow" style="color: #ff464e;">免费注册</a>　|
+      {/if}  
+      </div>
+      <div class="other">
+        {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/forum.html" target="_blank">{else/}<a href="__INDEX__/forum.html" target="_blank">{/if}论坛社区</a>       
+        <a href="tencent://message/?uin={:config('web.WEB_QQ')}&Site={:config('web.WEB_COM')}&Menu=yes" target="_blank" rel="nofollow">客服服务</a>        
+      </div>
+    </div>
+  </div>  
+</div>
+<div class="layui-header header">
+  <div class="layui-main">
+    <div class="hgroup">
+      <a class="logo" href="/" title="{:config('web.WEB_TIT')}">
+        <img src="{:config('web.WEB_LOGO')}" alt="{:config('web.WEB_TIT')}">
+      </a>
+      <div class="protection">
+        <img src="__HOME__/img/protection.png" alt="protection">
+      </div>
+      <div class="search">
+        {if condition="config('web.WEB_URL') eq 1"}<form action="__ROOT__/search.html">{else/}<form action="__INDEX__/search.html">{/if}
+          <span class="search-box">
+            <input type="text" id="ks" name="ks" value="<?php echo input('ks');?>" onblur="this.value==''?this.value=this.title:null" onfocus="this.value==this.title?this.value='':null" placeholder="请输入想找的宝贝" autocomplete="off" required lay-verify="required" class="layui-input txt">
+          </span>
+          <button class="smt" lay-submit lay-filter="submit"><i class="layui-icon">&#xe615;</i></button>
+        </form>
+        <div class="hot-k">
+          <span>热搜词：</span>
+          {volist name="TagList" id="tag"}
+          {if condition="$tag neq ''"}
+            {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/search.html?ks={$tag}">{else/}<a href="__INDEX__/search.html?ks={$tag}">{/if}
+            {$tag}</a>{/if}
+          {/volist}
+        </div>
+        <div id="suggest" class="suggest"></div>
+      </div>
+    </div>
+    <div class="nav">
+      <ul class="navigation">
+        <li {if condition="$nav_curr eq 'index'"}class="active first"{/if}><a href="/">所有分类<i class="layui-icon" style="vertical-align: -2px;">&#xe625;</i></a></li>    
+        {volist name="NavList" id="vo"}
+          {if condition="($vo.type eq '1') and ($vo.identity eq 'main')"}
+          <li {if condition="$nav_curr eq $vo.alias"}class="active"{/if}><a href="{$vo.links}" {if condition="$vo.target eq 1"}target="_blank"{/if}>{$vo.name}</a></li>
+          {/if}
+        {/volist} 
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>发表帖子 - {:config('web.WEB_AUT')}</title>
+<meta name="keywords" content="{:config('web.WEB_KEY')}">
+<meta name="description" content="{:config('web.WEB_DES')}">
+{include file="forum/header"}
+<link rel="stylesheet" href="__ADMIN__/wangEditor/css/wangEditor.min.css">
+<script type="text/javascript" src="__ADMIN__/wangEditor/js/wangEditor.min.js"></script>
+<style type="text/css">
+.wangEditor-menu-container .menu-item a {padding: 12px 0;}
+.wangEditor-menu-container .menu-item {width: 37px;height: 37px;}
+.wangEditor-menu-container .menu-group {padding: 0;}
+.wangEditor-container {border: 1px solid #e6e6e6;}
+</style>
+<div class="main layui-clear">
+  <div class="fly-panel" pad20>
+    <h2 class="page-title">发表帖子</h2>
+    <!-- <div class="fly-none">并无权限</div> -->
+    <div class="layui-form">
+      <form method="post" enctype="multipart/form-data">
+        <!-- 板块 -->
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">板块</label>
+            <div class="layui-input-block">
+              <select name="fid">
+              {volist name="ForumList" id="vo"}
+                {if condition="$vo.open eq 1"}
+                  <option value="{$vo.id}">{$vo.name}</option>
+                {else /}
+                  {if condition="$Think.session.grades eq 1"}
+                    <option value="{$vo.id}">{$vo.name}</option>
+                  {/if}
+                {/if}
+              {/volist}
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- 标题 -->
+        <div class="layui-form-item">
+          <label for="L_title" class="layui-form-label">标题</label>
+          <div class="layui-input-block">
+            <input type="text" name="title" required lay-verify="required|titlea|titleb" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <!-- 帖子内容 -->
+        <div class="layui-form-item layui-form-text">
+          <div class="layui-input-block">
+            <textarea id="textarea" name="content" required lay-verify="required" class="layui-textarea fly-editor" style="width: 100%;height:400px;"></textarea>
+          </div>
+          <label for="L_content" class="layui-form-label" style="top: -2px;">帖子内容</label>
+        </div>
+        <!-- 隐藏内容 -->
+        <div class="layui-form-item">
+          <label for="L_secret" class="layui-form-label">隐藏内容</label>
+          <div class="layui-input-block">
+            <input type="text" name="secret" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <!-- 标签 -->
+        <div class="layui-form-item tpt-item">
+          <input type="hidden" name="keywords" value="">
+          <div id="tpt-sel" class="tpt-sels" style="margin-top: 20px;">
+            <span style="margin-bottom: 5px;float: left;"></span>
+            <div class="layui-form-item" style="margin-bottom: 10px;">
+              <label class="layui-form-label">标签</label>
+              <div class="layui-input-block">
+                <input id="tpt-input" type="text" value="" autocomplete="off" class="layui-input" style="width: 400px;float: left;margin-right: 20px;">
+                <button class="layui-btn" id="tpt-btn" type="button" style="background: #FF5722;">添加标签</button>
+              </div>           
+            </div>
+          </div>
+          <div id="tpt-pre" class="tpt-pres" style="margin-bottom: 15px;">
+            {volist name="TagList" id="tag"}
+            {if condition="$tag neq ''"}<a href="javascript:;">{$tag}</a>{/if}
+            {/volist}
+          </div>
+        </div>
+        <!-- 发布按钮 -->
+        <div class="layui-form-item">
+          <button class="layui-btn" lay-submit="" lay-filter="thread_add">立即发布</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{include file="forum/footer"}
+<script type="text/javascript">
+$(function() {
+  $('#tpt-input').keydown(function(e) {
+    if (e.which === 13) {
+      $("#tpt-btn").click();
+      e.preventDefault();
+      return false;
+    }
+  });
+  $("#tpt-sel").on('click', 'a>em', function() {
+    var name = "keywords";
+    var tag = $(this).parent().text();
+    $(this).parent().remove();
+    var TagList = new Array();
+    $("#tpt-sel").find('a').each(function() {
+      TagList.push($(this).text());
+    });
+    $("input[name=" + name + "]").val(TagList.join(","));
+    $("#tpt-pre a:contains('" + tag + "')").removeClass("selected");
+  });
+  $("#tpt-btn").click(function() {
+    var name = "keywords";
+    var TagList = $.trim($("input[name=" + name + "]").val());
+    if (TagList !== "") {
+      TagList = TagList.split(",");
+    } else {
+      TagList = new Array();
+    }
+    var tag = $.trim($("#tpt-input").val());
+    if (tag !== '' && $.inArray(tag, TagList) === -1) {
+      TagList.push(tag);
+      $("#tpt-pre a:contains('" + tag + "')").addClass("selected");
+    }
+    $("#tpt-sel").children('span').empty();
+    $.each(TagList, function(k, v) {
+      $("#tpt-sel").children('span').append('<a href="javascript:;">' + v + '<em></em></a>');
+    });
+    $("input[name=" + name + "]").val(TagList.join(","));
+    $("#tpt-input").val('');
+  });
+  $("#tpt-pre").on('click', 'a:not(.selected)', function() {
+    var name = "keywords";
+    var TagList = $.trim($("input[name=" + name + "]").val());
+    if (TagList !== "") {
+      TagList = TagList.split(",");
+    } else {
+      TagList = new Array();
+    }
+    var tag = $.trim($(this).text());
+    if (tag !== '' && $.inArray(tag, TagList) === -1) {
+      TagList.push(tag);
+    }
+    $("#tpt-sel").children('span').empty();
+    $.each(TagList, function(k, v) {
+      $("#tpt-sel").children('span').append('<a href="javascript:;">' + v + '<em></em></a>');
+    });
+    $("input[name=" + name + "]").val(TagList.join(","));
+    $(this).addClass('selected');
+  });
+});
+</script>
+<script type="text/javascript">
+  var editor = new wangEditor('textarea');
+  editor.config.uploadImgUrl = '{:url("index/thread/doUploadPic")}';
+  editor.config.uploadImgFileName = 'FileName';
+  editor.config.menus = $.map(wangEditor.config.menus, function(item, key) {
+    if (item === 'eraser') {
+    return null;
+    }
+    return item;
+    });
+  editor.config.pasteText = true;
+  editor.create();
+</script>
+<script type="text/javascript">
+layui.use('form', function(){
+  var form = layui.form()
+  ,jq = layui.jquery;
+  form.verify({
+    titlea: function(value){
+      if(value.length < 5){
+        return '标题必须大于5位';
+      }
+    }, 
+    titleb: function(value){
+      if(value.length > 60){
+        return '标题必须小于60位';
+      }
+    }
+  });
+
+  form.on('submit(thread_add)', function(data){
+    loading = layer.load(2, {
+      shade: [0.2,'#000']
+    });
+    var param = data.field;
+    jq.post('{:url("index/thread/add")}',param,function(data){
+      if(data.code == 200){
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+          /*location.href = '#';*/
+          location.reload()
+        });
+      }else{
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+      }
+    });
+    return false;
+  });
+})
+</script>
+</body>
+</html>

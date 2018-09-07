@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Swiper demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+    <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="../dist/css/swiper.min.css">
+
+    <!-- Demo styles -->
+    <style>
+    body {
+        background: #eee;
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color:#000;
+        margin: 0;
+        padding: 0;
+    }
+    .swiper-container {
+        width: 500px;
+        height: 300px;
+        margin: 20px auto;
+    }
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+    </style>
+</head>
+<body>
+<!-- Swiper -->
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide"><a href="#"><img src="http://caibaojian.com/demo/2015/swiper/demos/img/slider1-1.png"></a></div>
+        <div class="swiper-slide"><a href="#"><img src="http://caibaojian.com/demo/2015/swiper/demos/img/slider1-1.png"></a></div>
+        <div class="swiper-slide"><a href="#"><img src="http://caibaojian.com/demo/2015/swiper/demos/img/slider1-1.png"></a></div>
+    </div>
+    <!-- Add Pagination -->
+    <div class="swiper-pagination"></div>
+    <!-- Add Arrows -->
+    <div class="swiper-button-next swiper-button-white"></div>
+    <div class="swiper-button-prev swiper-button-white"></div>        
+</div>
+<!-- Swiper JS -->
+<script src="../dist/js/swiper.min.js"></script>
+<!-- Initialize Swiper -->
+<script>
+var swiper = new Swiper('.swiper-container', {
+    pagination: '.swiper-pagination',
+    loop : true,
+    slidesPerView: 'auto',
+    centeredSlides: true,
+    paginationClickable: true,
+    spaceBetween: 30,
+    nextButton: '.swiper-button-next',
+    prevButton: '.swiper-button-prev',
+    autoplay: 2000,
+    loopedSlides: 30,
+    autoHeight: true, 
+    autoplayDisableOnInteraction : false
+});
+</script>
+</body>
+</html>

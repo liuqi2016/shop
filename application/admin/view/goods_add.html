@@ -1,0 +1,373 @@
+{include file="index/header"}
+<link rel="stylesheet" href="__ADMIN__/wangEditor/css/wangEditor.min.css">
+<script type="text/javascript" src="__ADMIN__/wangEditor/js/wangEditor.min.js"></script>
+<style type="text/css">
+.wangEditor-menu-container .menu-item a {padding: 12px 0;}
+.wangEditor-menu-container .menu-item {width: 37px;height: 37px;}
+.wangEditor-menu-container .menu-group {padding: 0;}
+.wangEditor-container {border: 1px solid #e6e6e6;}
+</style>
+<body>
+<div class="fly-panel fly-panel-user">
+  <div class="tpt-admin">
+    <fieldset class="layui-elem-field layui-field-title">
+      <legend>添加商品</legend>
+    </fieldset>
+    <form  class="layui-form">
+      <!-- 分类 -->
+      <div class="layui-form-item" style="width: 300px;">
+        <label class="layui-form-label">所在分类</label>
+        <div class="layui-input-block">
+            <select name="cid">
+            {volist name="CategoryList" id="vo"}
+              {if condition="$vo.open eq 1"}
+                <option value="{$vo.id}">{$vo.name}</option>
+              {/if}
+            {/volist}
+            </select>
+        </div>
+      </div>
+      <!-- 商品链接 -->
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">商品链接</label>
+          <div class="layui-input-inline" style="width: 500px;">
+            <input type="text" name="link" id="goods_link" autocomplete="off" class="layui-input">
+            <div class="layui-form-mid layui-word-aux">淘宝/天猫的商品链接，如：http://item.taobao.com/item.htm?id=557157320426</div>
+          </div>
+          <div class="layui-input-inline" style="width: 150px;">
+            <a class="layui-btn collect" title="一键采集">一键采集</a>
+          </div>       
+        </div>
+      </div>       
+      <!-- 标题 -->
+      <div class="layui-form-item">
+        <label for="L_title" class="layui-form-label">标题</label>
+        <div class="layui-input-block">
+          <input type="text" name="title" id="J_title" required lay-verify="required|titlea|titleb" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <!-- 商品ID -->
+      <div class="layui-form-item">
+        <label for="L_numIid" class="layui-form-label">商品ID</label>
+        <div class="layui-input-block">
+          <input type="text" name="numIid" id="J_numIid" required lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <!-- 卖家类型 -->
+      <div class="layui-form-item" style="width: 250px;">
+        <label class="layui-form-label">卖家类型</label>
+        <div class="layui-input-block">
+            <select name="userType">
+              <option value="0">淘宝</option>
+              <option value="1">天猫</option>
+            </select>
+        </div>
+      </div>
+      <!-- 商品图片-->
+      <div class="layui-form-item">
+        <label class="layui-form-label">商品图片</label>
+        <div class="layui-input-block">
+          <input type="file" name="file" class="layui-upload-file" id="image" style="float: left;">
+          <input type="text" name="pic" id="J_pic" class="layui-input" style="position: absolute;left: 111px;top: 0px;width: 500px;">
+        </div>
+      </div>      
+      <!-- 描述 -->
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">描述</label>
+        <div class="layui-input-block">
+          <textarea name="description" id="J_description" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+      </div>
+      <!-- 商品价格 -->
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">现价</label>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="couponPrice" id="J_couponPrice" placeholder="￥" autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-form-mid">原价</div>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="price" id="J_price" placeholder="￥" autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-form-mid">折扣</div>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="couponRate" id="J_couponRate" autocomplete="off" class="layui-input">
+          </div>          
+        </div>
+      </div>
+      <!-- 销量 -->
+      <div class="layui-form-item">
+        <label class="layui-form-label">销量</label>
+        <div class="layui-input-block">
+          <input type="text" name="volume" id="J_volume" autocomplete="off" class="layui-input">
+        </div>
+      </div>      
+      <!-- 佣金 -->
+      <div class="layui-form-item">
+        <label class="layui-form-label">佣金</label>
+        <div class="layui-input-block">
+          <input type="text" name="commission" id="J_commission" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <!-- 优惠卷 -->
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">优惠卷</label>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="couponAmount" autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-form-mid">优惠券总量</div>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="couponTotalcount" autocomplete="off" class="layui-input">
+          </div>  
+          <div class="layui-form-mid">优惠券剩余量</div>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="couponRemaincount" autocomplete="off" class="layui-input">
+          </div>          
+        </div>
+      </div> 
+      <!-- 淘口令 -->
+      <div class="layui-form-item">
+        <label class="layui-form-label">淘口令</label>
+        <div class="layui-input-block">
+          <input type="text" name="taoToken" autocomplete="off" class="layui-input">
+        </div>
+      </div>  
+      <!-- 掌柜旺旺名/卖家ID -->
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">掌柜旺旺名</label>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="nick" id="J_nick" autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-form-mid">卖家ID</div>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="sellerId" id="J_sellerId" autocomplete="off" class="layui-input">
+          </div>        
+        </div>
+      </div>
+      <!-- 转化链接 -->
+      <div class="layui-form-item">
+        <label class="layui-form-label">转化链接</label>
+        <div class="layui-input-block">
+          <input type="text" name="clickUrl" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <!-- 商品时间 -->
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">开始时间</label>
+          <div class="layui-input-inline">
+            <input type="text" name="startTime" id="date" value="<?php echo $showtime=date('Y-m-d H:i:s');?>" placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input" onclick="layui.laydate({elem: this})">
+          </div>
+          <div class="layui-form-mid">结束时间</div>
+          <div class="layui-input-inline">
+            <input type="text" name="endTime" id="date" value="<?php echo $now=date('Y-m-d H:i:s',strtotime('next week')); ?>" placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input" onclick="layui.laydate({elem: this})">
+          </div>
+        </div>
+      </div>
+      <!-- 商品内容 -->
+      <div class="layui-form-item layui-form-text">
+        <label for="L_content" class="layui-form-label" style="top: -2px;">商品内容</label>
+        <div class="layui-input-block">
+          <textarea id="textarea" name="content" class="layui-textarea fly-editor" style="width: 100%;height:400px;"></textarea>
+        </div>
+      </div>
+      <!-- 标签 -->
+      <div class="layui-form-item tpt-item">
+        <input type="hidden" name="keywords" value="">
+        <div id="tpt-sel" class="tpt-sels" style="margin-top: 20px;">
+          <span class="layui-input-block" style="margin-bottom: 5px;float: left;"></span>
+          <div class="layui-form-item" style="margin-bottom: 10px;">
+            <label class="layui-form-label">标签</label>
+            <div class="layui-input-block">
+              <input id="tpt-input" type="text" value="" autocomplete="off" class="layui-input" style="width: 400px;float: left;margin-right: 20px;">
+              <button class="layui-btn" id="tpt-btn" type="button" style="background: #FF5722;">添加标签</button>
+            </div>           
+          </div>
+        </div>
+        <div class="layui-input-block">
+          <div id="tpt-pre" class="tpt-pres" style="margin-bottom: 15px;">
+            {volist name="TagList" id="tag"}
+            {if condition="$tag neq ''"}<a href="javascript:;">{$tag}</a>{/if}
+            {/volist}
+          </div>
+        </div>
+      </div>
+      <!-- 发布按钮 -->
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" lay-submit="" lay-filter="goods_add">立即发布</button>
+          <button class="layui-btn layui-btn-primary" onclick="history.go(-1)">返回</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{include file="index_footer"}
+<script type="text/javascript">
+$(function() {
+  $('#tpt-input').keydown(function(e) {
+    if (e.which === 13) {
+      $("#tpt-btn").click();
+      e.preventDefault();
+      return false;
+    }
+  });
+  $("#tpt-sel").on('click', 'a>em', function() {
+    var name = "keywords";
+    var tag = $(this).parent().text();
+    $(this).parent().remove();
+    var TagList = new Array();
+    $("#tpt-sel").find('a').each(function() {
+      TagList.push($(this).text());
+    });
+    $("input[name=" + name + "]").val(TagList.join(","));
+    $("#tpt-pre a:contains('" + tag + "')").removeClass("selected");
+  });
+  $("#tpt-btn").click(function() {
+    var name = "keywords";
+    var TagList = $.trim($("input[name=" + name + "]").val());
+    if (TagList !== "") {
+      TagList = TagList.split(",");
+    } else {
+      TagList = new Array();
+    }
+    var tag = $.trim($("#tpt-input").val());
+    if (tag !== '' && $.inArray(tag, TagList) === -1) {
+      TagList.push(tag);
+      $("#tpt-pre a:contains('" + tag + "')").addClass("selected");
+    }
+    $("#tpt-sel").children('span').empty();
+    $.each(TagList, function(k, v) {
+      $("#tpt-sel").children('span').append('<a href="javascript:;">' + v + '<em></em></a>');
+    });
+    $("input[name=" + name + "]").val(TagList.join(","));
+    $("#tpt-input").val('');
+  });
+  $("#tpt-pre").on('click', 'a:not(.selected)', function() {
+    var name = "keywords";
+    var TagList = $.trim($("input[name=" + name + "]").val());
+    if (TagList !== "") {
+      TagList = TagList.split(",");
+    } else {
+      TagList = new Array();
+    }
+    var tag = $.trim($(this).text());
+    if (tag !== '' && $.inArray(tag, TagList) === -1) {
+      TagList.push(tag);
+    }
+    $("#tpt-sel").children('span').empty();
+    $.each(TagList, function(k, v) {
+      $("#tpt-sel").children('span').append('<a href="javascript:;">' + v + '<em></em></a>');
+    });
+    $("input[name=" + name + "]").val(TagList.join(","));
+    $(this).addClass('selected');
+  });
+});
+</script>
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+  var editor = new wangEditor('textarea');
+  editor.config.uploadImgUrl = '{:url("goods/doUploadPic")}';
+  editor.config.uploadImgFileName = 'FileName';
+  editor.config.menus = $.map(wangEditor.config.menus, function(item, key) {
+    if (item === 'eraser') {
+    return null;
+    }
+    return item;
+    });
+  editor.config.pasteText = true;
+  editor.create();
+</script>
+<script type="text/javascript">
+layui.use(['form', 'laydate', 'upload'], function(){
+  var form = layui.form()
+  ,layer = layui.layer
+  ,laydate = layui.laydate  
+  ,jq = layui.jquery;
+
+  jq('.collect').click(function(){
+    var link = $("#goods_link").val();
+    jq.post('{:url("goods/collect")}',{link:link},function(data){
+      if(data.code == 200){
+        $('.layui-layer-content').text(data.msg);
+        var item = data.msg;
+        $('#J_title').val(item['title']);
+        $('#J_numIid').val(item['numIid']);
+        $('#J_pic').val(item['pic']);
+        $('#J_description').val(item['description']);
+        $('#J_couponPrice').val(item['couponPrice']);
+        $('#J_price').val(item['price']);
+        $('#J_couponRate').val(item['couponRate']);
+        $('#J_volume').val(item['volume']);
+        $('#J_commission').val(item['commission']);
+        $('#J_nick').val(item['nick']);
+        $('#J_sellerId').val(item['sellerId']);                        
+      }else{
+        $('.layui-layer-content').text(data.msg);
+      }
+    });
+  });
+
+  layui.upload({
+    url: '{:url("upload/upimage")}'
+    ,elem:'#image'
+    ,before: function(input){
+      loading = layer.load(2, {
+        shade: [0.2,'#000']
+      });
+    }
+    ,success: function(res){
+      layer.close(loading);
+      jq('input[name=pic]').val(res.path);
+      layer.msg(res.msg, {icon: 1, time: 1000});
+    }
+  }); 
+
+  form.verify({
+    titlea: function(value){
+      if(value.length < 5){
+        return '标题必须大于5位';
+      }
+    }, 
+    titleb: function(value){
+      if(value.length > 60){
+        return '标题必须小于60位';
+      }
+    }
+  });
+
+  form.on('submit(goods_add)', function(data){
+    loading = layer.load(2, {
+      shade: [0.2,'#000']
+    });
+    var param = data.field;
+    jq.post('{:url("goods/add")}',param,function(data){    
+      if(data.code == 200){
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+          location.href = '{:url("goods/index")}';
+          /*location.href = '#';
+          location.reload()*/
+        });
+      }else{
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+      }
+    });
+    return false;
+  });
+})
+</script>
+</body>
+</html>

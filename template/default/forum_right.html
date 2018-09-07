@@ -1,0 +1,55 @@
+<div class="edge">
+  <!-- 最新会员 -->
+	<div class="fly-panel leifeng-rank"> 
+    <h3 class="fly-panel-title">最新会员</h3>
+    <dl>
+      {volist name="NewMemberList" id="vo"}
+	    <dd>
+        {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/home/{$vo.userid}.html">{else/}<a href="__INDEX__/home/{$vo.userid}.html">{/if}
+          <img src="__ROOT__{$vo.userhead}">
+          <cite>{$vo.point}</cite>
+          <i>{$vo.username}</i>
+        </a>
+      </dd>
+      {/volist}
+    </dl>
+  </div>
+  <!-- 广告 -->
+  <div class="fly-panel">  
+    {volist name="BannerList" id="vo"}
+      {if condition="$vo.identity eq 'forum-banner'"}
+      <li><a href="{$vo.links}" target="_blank"><img src="{$vo.pic}" style="width: 100%;" alt="{$vo.title}" /></a></li>
+      {/if}
+    {/volist}  
+  </div>
+	<!-- 板块列表 -->
+  <div class="fly-panel fly-link fly-list-one"> 
+    <h3 class="fly-panel-title">版块列表</h3>
+    <ul>
+    {volist name="ForumList" id="vo"}
+      <li>{if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/frm/{$vo.id}.html">{else/}<a href="__INDEX__/frm/{$vo.id}.html">{/if}{$vo.name}</a></li>
+	  {/volist}
+    </ul>
+  </div>
+  <!-- 精选帖子 -->  
+  <dl class="fly-panel fly-list-one"> 
+    <dt class="fly-panel-title">精选帖子</dt>
+    {volist name="ChoiceThreadList" id="vo"}
+    <dd>
+      {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/trd/{$vo.id}.html">{else/}<a href="__INDEX__/trd/{$vo.id}.html">{/if}{$vo.title}</a>
+      <span><i class="iconfont">&#xe60b;</i> {$vo.view}</span>
+    </dd>
+    {/volist}
+  </dl>
+  <!-- 热门帖子 -->   
+  <dl class="fly-panel fly-list-one"> 
+    <dt class="fly-panel-title">热门帖子</dt>
+    {volist name="HotThreadList" id="vo"}
+    <dd>
+      {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/trd/{$vo.id}.html">{else/}<a href="__INDEX__/trd/{$vo.id}.html">{/if}{$vo.title}</a>
+      <span><i class="iconfont">&#xe60b;</i> {$vo.view}</span>
+    </dd>
+    {/volist}
+  </dl>
+  <!-- 友情链接 --> 
+</div>

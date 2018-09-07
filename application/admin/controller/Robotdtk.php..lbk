@@ -1,0 +1,187 @@
+<?php
+namespace app\admin\controller;
+use think\Controller;
+use think\Db;
+use app\admin\model\Robotdtk as RobotdtkModel;
+class Robotdtk extends Common
+{
+    
+    public function index()
+    {
+        $RobotdtkMd = new RobotdtkModel();
+        $RobotdtkList = $RobotdtkMd->order('id ASC')->select();
+        $this->assign('RobotdtkList', $RobotdtkList);
+        return view();
+    }
+    public function add()
+    {
+        $RobotdtkMd = new RobotdtkModel();
+        if (request()->isPost()) {
+            $data = input('post.');
+            $data['time'] = time();
+            if ($RobotdtkMd->add($data)) {
+                return json(array('code' => 200, 'msg' => '添加成功'));
+            } else {
+                return json(array('code' => 0, 'msg' => '添加失败'));
+            }
+        }
+        $RobotdtkList = $RobotdtkMd->order('id ASC')->select();
+        $this->assign('RobotdtkList', $RobotdtkList);
+        $CategoryDb = Db::name('category');
+        $CategoryList = Db::name('category')->select();
+        $this->assign('CategoryList', $CategoryList);        
+        return view();
+    }
+    public function edit()
+    {
+        $RobotdtkMd = new RobotdtkModel();
+        if (request()->isPost()) {
+            $data = input('post.');
+            if ($RobotdtkMd->edit($data)) {
+                return json(array('code' => 200, 'msg' => '修改成功'));
+            } else {
+                return json(array('code' => 0, 'msg' => '修改失败'));
+            }
+        }
+        $Robotdtk = $RobotdtkMd->find(input('id'));
+        $RobotdtkList = $RobotdtkMd->order('id ASC')->select();
+        $this->assign(array('RobotdtkList' => $RobotdtkList, 'Robotdtk' => $Robotdtk));
+        $CategoryDb = Db::name('category');
+        $CategoryList = Db::name('category')->select();
+        $this->assign('CategoryList', $CategoryList);        
+        return view();
+    }
+    public function dels()
+    {
+        $dels = Db::name('robotdtk')->delete(input('id'));
+        if ($dels) {
+            return json(array('code' => 200, 'msg' => '删除成功'));
+        } else {
+            return json(array('code' => 0, 'msg' => '删除失败'));
+        }
+    }
+    public function delss()
+    {
+        $RobotdtkMd = new RobotdtkModel();
+        $params = input('post.');
+        $ids = implode(',', $params['ids']);
+        $result = $RobotdtkMd->batches('delete', $ids);
+        if ($result) {
+            return json(array('code' => 200, 'msg' => '批量删除成功'));
+        } else {
+            return json(array('code' => 0, 'msg' => '批量删除失败'));
+        }
+    }
+
+
+    public function auto_collect()
+    {
+        $data = input('post.');
+        if(isset($data['more'])){
+            if(!session('?collect_info')){
+                return json(array('code' => 400, 'msg' => '没有采集器'));
+            }
+            $collect_info = session('collect_info');
+            $collect_list = $collect_info['list'];
+            $cur_collect_list = $collect_list[$collect_info['cur_index']];
+
+            if($collect_info['read_num'] >= 50){ //每页采集条数
+                $collect_info['cur_page'] = $collect_info['cur_page']+1;
+                $collect_info['read_num'] = 0;
+            }
+
+            if($collect_info['cur_page'] > $cur_collect_list['page']){
+                $collect_info['cur_index'] = $collect_info['cur_index']+1;
+                if(isset($collect_list[$collect_info['cur_index']])){
+                    $cur_collect_list = $collect_list[$collect_info['cur_index']];
+                    $collect_info['cur_page'] = 1;
+                    $collect_info['read_num'] = 0;
+                }else{
+                    session('collect_info',null);
+                    return json(array('code' => 202, 'msg' => '采集结束'));
+                }
+            }
+            //-----采集器开始-----
+            $appkey = 'tnah3n5htp';
+            $api_url = 'http://api.dataoke.com/index.php?r=Port/index&type=total&appkey='. $appkey .'&v=2&page='. $collect_info['cur_page'];
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $api_url);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 29);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $source = curl_exec($ch);
+            curl_close($ch);
+            if (!$source) {
+                $source = file_get_contents($api_url);
+            }
+            $result_data = json_decode($source, true);
+            $i = $collect_info['read_num']+1;
+            //获取数据            
+            $item['cid'] = '1';//分类
+            $item['uid'] = session('userid');//发布者ID
+            $item['title'] = $result_data['result'][$i]['Title'];;//标题
+            $item['pic'] = str_replace('https', 'http', $result_data['result'][$i]['Pic']);//图片
+            $item['view'] = 1;//浏览量
+            $item['numIid'] = $result_data['result'][$i]['GoodsID'];//商品ID
+            $item['price'] = $result_data['result'][$i]['Org_Price'];//原价
+            $item['couponPrice'] = $result_data['result'][$i]['Price'];//现价
+            $item['couponRate'] = round(($item['couponPrice'] / $item['price']) * 10, 1);//折扣
+            $item['commission'] = $result_data['result'][$i]['Commission'] * ($item['couponPrice'] / 100);//佣金
+            $item['volume'] = $result_data['result'][$i]['Sales_num'];//30天销量
+            $item['nick'] = $result_data['result'][$i]['SellerID'];//掌柜旺旺名
+            $item['sellerId'] = $result_data['result'][$i]['SellerID'];//卖家id
+            $item['clickUrl'] = mt_rand(1000000,99999999);//推广链接
+            $item['taoToken'] = '';//淘口令
+            $item['couponAmount'] = $result_data['result'][$i]['Quan_price'];//优惠卷
+            $item['couponTotalcount'] = $result_data['result'][$i]['Quan_surplus'];//优惠券总量
+            $item['couponRemaincount'] = $result_data['result'][$i]['Quan_condition'];//优惠券剩余量
+            if($result_data['result'][$i]['IsTmall'] == 1) {
+                $item['userType'] = "0";
+            } else {
+                $item['userType'] = "1";
+            }   
+            $item['dxjhType'] = "0";//定向计划
+            $item['startTime'] = time();//开始时间
+            $item['endTime'] = strtotime($result_data['result'][$i]['Quan_time']);//结束时间
+            $item['keywords'] = mt_rand(1000000,99999999);//关键词
+            $item['description'] = $result_data['result'][$i]['Introduce'];//描述   
+            $item['content'] = '';//内容
+            //写入数据库
+            $GoodsDb = Db::name('goods');
+            $query = $GoodsDb->where('numIid','=',$item['numIid'])->select();
+            if (!$query) {
+                $result = $GoodsDb->insert($item);
+            } else {
+                $result = $GoodsDb->where('numIid',$item['numIid'])->update($item);
+            }
+            if($result){
+                $collect_info['read_num'] = $collect_info['read_num']+1;
+            }
+            //-----采集器结束-----
+            $new_collect_info = [
+                'list' => $collect_list,
+                'cur_index'=>$collect_info['cur_index'], //当前检索采集器索引
+                'cur_page'=>$collect_info['cur_page'],
+                'read_num'=>$collect_info['read_num'],//采集数
+                'count_goods_num'=>$collect_info['count_goods_num']+1,
+            ];
+            session('collect_info',$new_collect_info);
+            return json(array('code' => 200, 'msg' => '当前正在运行第' . ($collect_info['cur_index']+1) . '个采集器【' . $cur_collect_list['name'] . '】，已采集' . $collect_info['cur_page'] . '页,目前共采集到商品' . $new_collect_info['count_goods_num'] .'件。'));
+        }else{
+            $RobotdtkMd = new RobotdtkModel();
+            $RobotdtkList = $RobotdtkMd->order('id ASC')->select();
+            if($RobotdtkList){
+                $collect_info = [
+                    'list' => $RobotdtkList,
+                    'cur_index'=>0, //当前检索采集器索引
+                    'cur_page'=>1,
+                    'read_num'=>0,//采集数
+                    'count_goods_num'=>0
+                ];
+                session('collect_info',$collect_info);
+                return json(array('code' => 200, 'msg' => '开始采集'));
+            }else{
+                return json(array('code' => 400, 'msg' => '没有采集器'));
+            }
+        }
+    }
+}

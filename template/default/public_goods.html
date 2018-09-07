@@ -1,0 +1,42 @@
+{volist name="GoodsList" id="vo"}
+  <li>
+    <div class="goods-main">
+      <div class="pic">
+        <a href="{:url('dtl/'.$vo.id)}" target="_blank">
+          <img class="lazy" src="__HOME__/img/goods-loading.gif" data-original="{$vo.pic}" alt="{$vo.title}">                                           
+        </a>
+        {$vo.startTime|newicon}
+      </div>
+      {if condition="$vo.couponAmount neq 0"}
+      <div class="quan">
+        <a href="{:url('jump/index')}?id={$vo.id}" target="_blank" rel="nofollow">
+          <span class="quan-info"><em>{$vo.couponAmount}元</em></span>
+        </a>
+      </div>
+      {/if}
+      <h3 class="title">
+        <span class="label">包邮</span>{$vo.title}
+      </h3>
+      <div class="original-price">
+        <span class="price">现价：<em>￥</em>{$vo.price}</span>
+        <span class="sold">已售出 <em>{$vo.volume}</em> 件</span>
+      </div>
+      <div class="coupon-price">
+        <span class="price"><em>￥</em>{$vo.couponPrice}</span>
+        <i class="quan-price"></i>
+        <div class="btn-buy">
+          <a href="{:url('jump/index')}?id={$vo.id}" target="_blank" rel="nofollow">
+          {if condition="$vo.userType eq 0"}
+            <em class="t-icon"></em><i>去</i><span>淘宝</span>
+            {else/}
+            <em class="m-icon"></em><i>去</i><span>天猫</span>
+          {/if}
+          </a>
+        </div>
+      </div>
+    </div>
+  </li>
+{/volist}
+
+
+

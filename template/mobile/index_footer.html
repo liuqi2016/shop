@@ -1,0 +1,26 @@
+<div class="layui-footer footer">
+  <ul class="public">
+    <li {if condition="$nav_curr eq 'index'"}class="active"{/if}><a href="/" class="bottom_btn home">首页</a></li>
+    <li {if condition="$nav_curr eq 'jiu'"}class="active"{/if}>{if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/jiu.html" class="bottom_btn brand">{else/}<a href="__INDEX__/jiu.html" class="bottom_btn brand">{/if}9.9包邮</a></li>
+    <li {if condition="$nav_curr eq 'hot'"}class="active"{/if}>{if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/hot.html" class="bottom_btn client">{else/}<a href="__INDEX__/hot.html" class="bottom_btn client">{/if}爆款疯抢</a></li>
+    <li {if condition="$nav_curr eq 'live'"}class="active"{/if}>{if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/live.html" class="bottom_btn gift">{else/}<a href="__INDEX__/live.html" class="bottom_btn gift">{/if}领券直播</a></li>
+    <li {if condition="$nav_curr eq 'history'"}class="active"{/if}>{if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/history.html" class="bottom_btn user">{else/}<a href="__INDEX__/history.html" class="bottom_btn user">{/if}我的足迹</a></li>
+  </ul>
+</div> 
+<script src="__MOBILE__/mods/jquery.lazyload.js" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+$(function() {
+  $("img.lazy").lazyload({effect: "fadeIn"});
+});
+</script>
+<script type="text/javascript">
+layui.use(['element', 'form', 'util'], function(){
+  var element = layui.element()
+  ,util = layui.util;
+  element.on('nav(layui)', function(elem){
+    console.log(elem)
+  });
+  util.fixbar();
+});
+</script>
+{:html_entity_decode(config('web.WEB_TDJ'))}

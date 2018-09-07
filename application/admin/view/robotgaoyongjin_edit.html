@@ -1,0 +1,165 @@
+{include file="index/header"}
+<body>
+<div class="fly-panel fly-panel-user">
+  <div class="tpt-admin">
+    <fieldset class="layui-elem-field layui-field-title">
+      <legend>修改采集器</legend>
+    </fieldset>
+    <form class="layui-form">
+      <input type="hidden" name="id" value="{$Robotgaoyongjin.id}">
+      <!-- 采集器名称 -->
+      <div class="layui-form-item">
+        <label class="layui-form-label">采集器名称</label>
+        <div class="layui-input-block">
+          <input type="text" name="name" value="{$Robotgaoyongjin.name}" required lay-verify="required" placeholder="必填内容" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+       <!-- 入库分类 -->
+      <div class="layui-form-item" style="width: 300px;">
+        <label class="layui-form-label">入库分类</label>
+        <div class="layui-input-block">
+          <select name="cid">
+          {volist name="CategoryList" id="vo"}
+            <option {if condition="$Robotgaoyongjin['cid'] eq $vo['id']"}selected="selected"{/if} value="{$vo.id}">{$vo.name}</option>
+          {/volist}
+          </select>
+        </div>
+      </div>
+      <!-- 采集分类 -->
+      <div class="layui-form-item" style="width: 300px;">
+        <label class="layui-form-label">采集分类</label>
+        <div class="layui-input-block">
+            <select name="catIds">
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '1&level=1'"}selected="selected"{/if} value="1&level=1">女装</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '2&level=1'"}selected="selected"{/if} value="2&level=1">男装</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '3%2C50006843&level=2'"}selected="selected"{/if} value="3%2C50006843&level=2">女鞋</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '3%2C50006842&level=2'"}selected="selected"{/if} value="3%2C50006842&level=2">箱包</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '3%2C50011740&level=2'"}selected="selected"{/if} value="3%2C50011740&level=2">男鞋</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '4&level=1'"}selected="selected"{/if} value="4&level=1">珠宝配饰</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '5&level=1'"}selected="selected"{/if} value="5&level=1">运动户外</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '6&level=1'"}selected="selected"{/if} value="6&level=1">美妆</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '7&level=1'"}selected="selected"{/if} value="7&level=1">母婴</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '8&level=1'"}selected="selected"{/if} value="8&level=1">食品</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '9&level=1'"}selected="selected"{/if} value="9&level=1">内衣</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '10&level=1'"}selected="selected"{/if} value="10&level=1">数码</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '11&level=1'"}selected="selected"{/if} value="11&level=1">家装</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '12&level=1'"}selected="selected"{/if} value="12&level=1">家居用品</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '13&level=1'"}selected="selected"{/if} value="13&level=1">家电</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '14&level=1'"}selected="selected"{/if} value="14&level=1">汽车</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '15&level=1'"}selected="selected"{/if} value="15&level=1">生活服务</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '16&level=1'"}selected="selected"{/if} value="16&level=1">图书音像</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '17&level=1'"}selected="selected"{/if} value="17&level=1">游戏话费</option>
+              <option {if condition="str_replace('&amp;', '&', $Robotgaoyongjin['catIds']) eq '64&level=1'"}selected="selected"{/if} value="64&level=1">其它</option>
+            </select>
+        </div>
+      </div>
+      <!-- 排序方式 -->
+      <div class="layui-form-item" style="width: 300px;">
+        <label class="layui-form-label">排序方式</label>
+        <div class="layui-input-block">
+            <select name="sort">
+              <option value=" ">综合排序</option>
+              <option {if condition="$Robotgaoyongjin['sort'] eq '1'"}selected="selected"{/if} value="1">收入比率从高到低</option>
+              <option {if condition="$Robotgaoyongjin['sort'] eq '7'"}selected="selected"{/if} value="7">月支出佣金从高到低</option>
+              <option {if condition="$Robotgaoyongjin['sort'] eq '5'"}selected="selected"{/if} value="5">月推广量从高到低</option>
+              <option {if condition="$Robotgaoyongjin['sort'] eq '9'"}selected="selected"{/if} value="9">销量从高到低</option>
+              <option {if condition="$Robotgaoyongjin['sort'] eq '3'"}selected="selected"{/if} value="3">价格从高到低</option>
+              <option {if condition="$Robotgaoyongjin['sort'] eq '4'"}selected="selected"{/if} value="4">价格从低到高</option>
+            </select>
+        </div>
+      </div> 
+      <!-- 天猫 -->
+      <div class="layui-form-item" style="width: 300px;">
+        <label class="layui-form-label">天猫</label>
+        <div class="layui-input-block">
+            <select name="userType">
+              <option value=" ">不限</option>
+              <option {if condition="$Robotgaoyongjin['userType'] eq '1'"}selected="selected"{/if} value="1">天猫</option>
+            </select>
+        </div>
+      </div>         
+      <!-- 价格限制 -->
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">价格</label>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="startPrice" value="{$Robotgaoyongjin.startPrice}" placeholder="￥" autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-form-mid"> - </div>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="endPrice" value="{$Robotgaoyongjin.endPrice}" placeholder="￥" autocomplete="off" class="layui-input">
+          </div>          
+        </div>
+      </div>
+      <!-- 佣金百分比限制 -->
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">佣金百分比</label>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="startTkRate" value="{$Robotgaoyongjin.startTkRate}" autocomplete="off" class="layui-input">
+          </div>
+          <div class="layui-form-mid"> - </div>
+          <div class="layui-input-inline" style="width: 150px;">
+            <input type="text" name="endTkRate" value="{$Robotgaoyongjin.endTkRate}" autocomplete="off" class="layui-input">
+          </div>          
+        </div>
+      </div>
+      <!-- 商品月销量 -->
+      <div class="layui-form-item">
+        <label class="layui-form-label">商品月销量</label>
+        <div class="layui-input-block">
+          <input type="text" name="startBiz30day" value="{$Robotgaoyongjin.startBiz30day}" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <!-- 所属类型 -->
+      <div class="layui-form-item">
+        <label class="layui-form-label">所属类型</label>
+        <div class="layui-input-block">
+          <input type="radio" name="type" value="1" title="优惠卷" {if condition="$Robotgaoyongjin['type'] eq 1"}checked=""{/if}>
+          <input type="radio" name="type" value="2" title="不限" disabled="">
+        </div>
+      </div>
+      <!-- 采集页数 -->
+      <div class="layui-form-item">
+        <label class="layui-form-label">采集页数</label>
+        <div class="layui-input-block">
+          <input type="text" name="page" value="{$Robotgaoyongjin.page}" required lay-verify="required" placeholder="必填内容" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+    	  <button class="layui-btn" lay-submit="" lay-filter="robotgaoyongjin_edit">立即提交</button>
+          <button class="layui-btn layui-btn-primary" onclick="history.go(-1)">返回</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{include file="index_footer"}
+<script type="text/javascript">
+layui.use(['form'],function(){
+  var form = layui.form()
+  ,jq = layui.jquery;
+
+  form.on('submit(robotgaoyongjin_edit)', function(data){
+    loading = layer.load(2, {
+      shade: [0.2,'#000']
+    });
+    var param = data.field;
+    jq.post('{:url("robotgaoyongjin/edit")}',param,function(data){
+      if(data.code == 200){
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+          location.href = '{:url("robotgaoyongjin/index")}';
+        });
+      }else{
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+      }
+    });
+    return false;
+  });
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+本系统为Tpt-Forum1.0 beta版，如果发现BUG请到官方社区或QQ群提交
+
+如果无法安装数据库请直接手动导入数据库
+
+1.把install/shujuku.sql文件导入到你的数据库里面。
+
+2.把install/database.php文件放入application里面，填好你的数据库信息就行。
+
+3.把更目录里的index.php和admin.php里面的安装代码删除。
+
+安装好后，后台地址admin.php 后台账号：admin，密码：123456，口令：123456

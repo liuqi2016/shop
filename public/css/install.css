@@ -1,0 +1,22 @@
+body{background:#fff}
+.header{width:100%;min-width:1000px;height:65px;background:#009688}
+.header h2 img{float:left;padding:0}
+.header ul{width:120px;height:65px;float:left;margin-left:68px}
+.header .innumber-this{background:#FF5722!important;color:#fff!important}
+.header .innumber{margin-top:12px;width:40px;height:40px;line-height:40px;text-align:center;font-size:20px;border-radius:50%;background:#fff;float:left;color:#009688}
+.header .inword{width:80px;height:65px;float:left;line-height:65px;text-indent:10px;font-size:16px;color:#fff}
+.main h2{font-size:20px;margin:20px 0}
+.main h3{font-size:16px;margin:20px 0 10px 0;color:#FF5722}
+.main p{font-size:14px;line-height:28px;margin-bottom:10px}
+.main tr{border:1px solid #EAEAEA}
+.main tr th{border-left:1px solid #EAEAEA;background:#F9F9F9;line-height:45px}
+.main tr td{border-left:1px solid #EAEAEA;line-height:40px;padding-left:20px}
+.inwp{width:1000px;margin:0 auto}
+.inout-danger a{float:left;border:1px solid #C9C9C9;background-color:#fff;color:#555;padding:8px 18px;border-radius:2px;margin-right:10px;margin-top:20px}
+.inout-danger a:hover{color:#555;opacity:.8;filter:alpha(opacity=80)}
+.inout a{float:left;color:#fff;padding:9px 18px;background:#009688;border-radius:2px;margin-top:20px}
+.inout a:hover{color:#fff;opacity:.8;filter:alpha(opacity=80)}
+.inout input{float:left;color:#fff;padding:9px 18px;background:#009688;border-radius:2px;margin-top:20px;border:none}
+.inout input:hover{color:#fff;opacity:.8;filter:alpha(opacity=80)}
+.layui-form-pane .layui-form-label{width:132px!important}
+.layui-form-pane .layui-input-block{margin-left:132px!important}

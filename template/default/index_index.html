@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{:config('web.WEB_TIT')}</title>
+<meta name="keywords" content="{:config('web.WEB_KEY')}">
+<meta name="description" content="{:config('web.WEB_DES')}">
+{include file="index/header"}
+<div class="filter">
+  <div id="subnav" class="subnav">
+    <div class="layui-main">
+      <div class="subnav-main">
+        <ul>
+          <li><a href="/" class="active">全部</a></li>
+          {volist name="CategoryList" id="vo"}
+          <li><a href="{:url('cat/'.$vo.id)}">{$vo.name}</a></li>  
+          {/volist}
+        </ul>
+      </div>
+    </div>    
+  </div>
+</div>
+<div class="swiper">
+  <div class="layui-main">
+    <div class="category">
+      <dl>
+        <dd><a href="{:url('cat/1')}"><i class="ct-icon ct-icon-nvzhuang"></i>女装<em class="ct-line"></em></a></dd>
+        <dd><a href="{:url('cat/2')}"><i class="ct-icon ct-icon-nanzhuang"></i>男装</a></dd>
+        <dd><a href="{:url('cat/7')}"><i class="ct-icon ct-icon-xiezi"></i>鞋子<em class="ct-line"></em></a></dd>
+        <dd><a href="{:url('cat/8')}"><i class="ct-icon ct-icon-xiangbao"></i>箱包</a></dd>
+        <dd><a href="{:url('cat/4')}"><i class="ct-icon ct-icon-muying"></i>母婴<em class="ct-line"></em></a></dd>
+        <dd><a href="{:url('cat/5')}"><i class="ct-icon ct-icon-meizhuang"></i>美妆</a></dd>
+        <dd><a href="{:url('cat/6')}"><i class="ct-icon ct-icon-jiafang"></i>居家<em class="ct-line"></em></a></dd>
+        <dd><a href="{:url('cat/9')}"><i class="ct-icon ct-icon-peishi"></i>配饰</a></dd>
+        <dd><a href="{:url('cat/12')}"><i class="ct-icon ct-icon-wenti"></i>文体<em class="ct-line"></em></a></dd>
+        <dd><a href="{:url('cat/10')}"><i class="ct-icon ct-icon-meishi"></i>美食</a></dd>
+        <dd><a href="{:url('cat/11')}"><i class="ct-icon ct-icon-shuma"></i>电器<em class="ct-line"></em></a></dd>
+        <dd><a href="{:url('cat/13')}"><i class="ct-icon ct-icon-jujia"></i>运动</a></dd>
+        <dd><a href="{:url('cat/3')}"><i class="ct-icon ct-icon-neiyi"></i>内衣<em class="ct-line"></em></a></dd>
+        <dd><a href="{:url('cat/14')}"><i class="ct-icon ct-icon-dianqi"></i>其他</a></dd>
+      </dl>
+    </div>
+    <div class="slide" id="slide">
+      <ul>
+      {volist name="BannerList" id="vo"}
+        {if condition="$vo.identity eq 'index-slide'"}
+        <li><a href="{$vo.links}" target="_blank"><img src="{$vo.pic}" alt="{$vo.title}" /></a></li>
+        {/if}
+      {/volist}  
+      </ul>
+    </div>
+    <div class="banner">
+      <dl>
+      {volist name="BannerList" id="vo"}
+        {if condition="$vo.identity eq 'index-banner'"}
+        <dd>
+          <a href="{$vo.links}" target="_blank">
+            <img src="{$vo.pic}" alt="{$vo.title}" />
+          </a>
+        </dd>
+        {/if}
+      {/volist}  
+      {volist name="BannerList" id="vo"}  
+        {if condition="$vo.identity eq 'index-banner-last'"}
+        <dd class="last">
+          <a href="{$vo.links}" target="_blank">
+            <img src="{$vo.pic}" alt="{$vo.title}" />
+          </a>
+        </dd>
+        {/if}
+      {/volist}   
+      </dl>
+    </div>
+  </div>
+</div>
+<div class="bread">
+  <div class="layui-main">
+    <div class="update-time">
+      <div class="today">
+        <i class="icon">NEW</i>今日新品<span>每天10点上新</span>
+      </div>
+    </div>
+    <ul class="other">
+      <li><a href="{:url('cat/1')}" target="_blank"><span>女装专场</span><i class="icon-arrow"></i></a></li>
+      <li><a href="{:url('cat/4')}" target="_blank"><span>母婴专场</span><i class="icon-arrow"></i></a></li>
+      <li><a href="{:url('cat/6')}" target="_blank"><span>居家专场</span><i class="icon-arrow"></i></a></li>
+      <li class="active"><a href="/" target="_blank"><span>全部商品</span><i class="icon-arrow"></i></a></li>
+    </ul>
+  </div>  
+</div>
+<div class="goods-list">
+  <div class="layui-main">
+    <ul class="list-main">
+      {volist name="SettopGoodsList" id="vo"}
+        <li>
+          <div class="goods-main">
+            <div class="pic">
+              <a href="{:url('dtl/'.$vo.id)}" target="_blank">
+                <img class="lazy" data-original="{$vo.pic}" alt="{$vo.title}">                                           
+              </a>
+              {$vo.startTime|newicon}
+            </div>
+            <div class="quan">
+              <a href="{:url('jump/index')}?id={$vo.id}" target="_blank" rel="nofollow">
+                <span class="quan-info"><em>{$vo.couponAmount}元</em></span>
+              </a>
+            </div>
+            <h3 class="title">
+              <span class="label">包邮</span>{$vo.title}
+            </h3>
+            <div class="original-price">
+              <span class="price">现价：<em>￥</em>{$vo.price}</span>
+              <span class="sold">已售出 <em>{$vo.volume}</em> 件</span>
+            </div>
+            <div class="coupon-price">
+              <span class="price"><em>￥</em>{$vo.couponPrice}</span>
+              <i class="quan-price"></i>
+              <div class="btn-buy">
+                <a href="{:url('jump/index')}?id={$vo.id}" target="_blank" rel="nofollow">
+                {if condition="$vo.userType eq 0"}
+                  <em class="t-icon"></em><i>去</i><span>淘宝</span>
+                  {else/}
+                  <em class="m-icon"></em><i>去</i><span>天猫</span>
+                {/if}
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+      {/volist}    
+      {include file="public/goods"}
+    </ul>
+    <!-- 分页导航 -->
+    {if condition="$GoodsList->render() neq ''"}
+    <div style="text-align: center">
+      <div class="laypage-main">
+        {$GoodsList->render()}
+      </div>
+    </div>
+    {/if}    
+  </div>
+</div>
+{include file="index/footer"}
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>优惠直播 - {:config('web.WEB_AUT')}</title>
+<meta name="keywords" content="{:config('web.WEB_KEY')}">
+<meta name="description" content="{:config('web.WEB_DES')}">
+{include file="index/header"}
+<div class="filter">
+  <div id="subnav" class="subnav" style="display: block;">
+    <div class="layui-main">
+      <div class="subnav-main">
+        <ul>
+          <li><a href="/">全部</a></li>
+          {volist name="CategoryList" id="vo"}
+          <li><a href="{:url('cat/'.$vo.id)}" {if condition="$cid eq $vo['id']"}class="active"{/if}>{$vo.name}</a></li>
+          {/volist}
+        </ul>
+      </div>
+    </div>    
+  </div>
+</div>
+<div class="goods-list">
+  <div class="layui-main">
+    <ul class="list-main">
+    {volist name="GoodsList" id="vo"}
+      <li>
+        <div class="goods-main">
+          <div class="pic">
+            <a href="{$vo.clickUrl}" target="_blank">
+              <img class="lazy" data-original="{$vo.pic}" alt="{$vo.title}">                                           
+            </a>
+            {$vo.startTime|newicon}
+          </div>
+          <div class="quan">
+            <a href="{$vo.clickUrl}" target="_blank" rel="nofollow">
+              <span class="quan-info"><em>{$vo.couponAmount}元</em></span>
+            </a>
+          </div>
+          <h3 class="title">
+            <span class="label">包邮</span>{$vo.title}
+          </h3>
+          <div class="original-price">
+            <span class="price">现价：<em>￥</em>{$vo.price}</span>
+            <span class="sold">已售出 <em>{$vo.volume}</em> 件</span>
+          </div>
+          <div class="coupon-price">
+            <span class="price"><em>￥</em>{$vo.couponPrice}</span>
+            <i class="quan-price"></i>
+            <div class="btn-buy">
+              <a href="{$vo.clickUrl}" target="_blank" rel="nofollow">
+              {if condition="$vo.userType eq 0"}
+                <em class="t-icon"></em><i>去</i><span>淘宝</span>
+                {else/}
+                <em class="m-icon"></em><i>去</i><span>天猫</span>
+              {/if}
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+    {/volist}
+    </ul>  
+  </div>
+</div>
+{include file="index/footer"}
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>基本设置 - {:config('web.WEB_AUT')}</title>
+<meta name="keywords" content="基本设置">
+<meta name="description" content="基本设置">
+{include file="forum/header"} 
+<div class="main fly-user-main layui-clear">
+  <ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
+    <li class="layui-nav-item">
+      {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/home/{$Think.session.userid}.html">{else/}<a href="__INDEX__/home/{$Think.session.userid}.html">{/if}
+        <i class="layui-icon">&#xe609;</i>
+        我的主页
+      </a>
+    </li>
+    <li class="layui-nav-item">
+     {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/user/index.html">{else/}<a href="__INDEX__/user/index.html">{/if}
+        <i class="layui-icon">&#xe612;</i>
+        我的帖子
+      </a>
+    </li>
+  <li class="layui-nav-item">
+      {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/user/comment.html">{else/}<a href="__INDEX__/user/comment.html">{/if}
+        <i class="layui-icon">&#xe611;</i>
+        我的回复
+      </a>
+    </li>
+    <li class="layui-nav-item layui-this">
+     {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/user/set.html">{else/}<a href="__INDEX__/user/set.html">{/if}
+        <i class="layui-icon">&#xe620;</i>
+        基本设置
+      </a>
+    </li>
+  </ul>
+  <div class="site-tree-mobile layui-hide">
+    <i class="layui-icon">&#xe602;</i>
+  </div>
+  <div class="site-mobile-shade"></div>
+  <div class="fly-panel fly-panel-user" pad20>
+    <div class="layui-tab layui-tab-brief" lay-filter="user">
+      <ul class="layui-tab-title" id="LAY_mine">
+        <li class="layui-this" lay-id="info">我的资料</li>
+        <li lay-id="avatar">头像</li>
+        <li lay-id="pass">密码</li>
+        <li lay-id="bind">帐号绑定</li>
+      </ul>
+      <div class="layui-tab-content" style="padding: 20px 0;">
+        <!-- 我的资料 -->
+        <div class="layui-form layui-form-pane layui-tab-item layui-show">
+          <form method="post">
+            <input type="hidden" name="userid" value="{$member.userid}">
+            <div class="layui-form-item">
+              <label for="L_email" class="layui-form-label">邮箱</label>
+              <div class="layui-input-inline">
+              <input type="text" name="usermail" required lay-verify="required" autocomplete="off" value="{$member.usermail}" class="layui-input" disabled>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label for="L_username" class="layui-form-label">昵称</label>
+              <div class="layui-input-inline">
+              <input type="text" name="username" required lay-verify="required|names" autocomplete="off" value="{$member.username}" class="layui-input" disabled>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label for="L_username" class="layui-form-label">性别</label>
+              <div class="layui-input-inline">
+                <input type="radio" name="sex" value="1" title="男" {if condition="$member['sex'] eq 1"}checked{/if}>
+                <input type="radio" name="sex" value="0" title="女" {if condition="$member['sex'] eq 0"}checked{/if}>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label for="L_city" class="layui-form-label">城市</label>
+              <div class="layui-input-inline">
+              <input type="text" name="userhome" lay-verify="homes" autocomplete="off" value="{$member.userhome}" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+              <label for="L_sign" class="layui-form-label">签名</label>
+              <div class="layui-input-block">
+              <textarea placeholder="随便写些什么刷下存在感" name="description" lay-verify="descrs" autocomplete="off" class="layui-textarea" style="height: 80px;">{$member.description}</textarea>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <button class="layui-btn" lay-submit="" lay-filter="user_set">确认修改</button>
+            </div>
+          </form>
+          </div>
+          <!-- 头像 -->
+          <div class="layui-form layui-form-pane layui-tab-item">
+            <form method="post">
+              <div class="layui-form-item">
+                <div class="avatar-add">
+                  <p>建议尺寸168*168，支持jpg、png、gif，最大不能超过50KB</p>
+                  <div class="upload-img">
+                    <input type="hidden" name="userid" value="{$member.userid}">
+                    <input type="file" name="file" class="layui-upload-file" id="image">
+                    <input type="hidden" name="userhead" value="{$member.userhead}" class="layui-input">
+                  </div>
+                  <img id="headedit" src="__ROOT__{$member.userhead}">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <button class="layui-btn" lay-submit="" lay-filter="user_headedit">确认修改</button>
+              </div>
+            </form>
+          </div>
+          <!-- 密码 -->
+          <div class="layui-form layui-form-pane layui-tab-item">
+            <form method="post">
+              <input type="hidden" name="userid" value="{$member.userid}">
+              <div class="layui-form-item">
+                <label class="layui-form-label">修改密码</label>
+                <div class="layui-input-inline">
+                  <input type="password" name="password" required lay-verify="required|pass" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">确认密码</label>
+                <div class="layui-input-inline">
+                  <input type="password" name="passwords" required lay-verify="required|pass" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <button class="layui-btn" lay-submit="" lay-filter="user_setedit">确认修改</button>
+              </div>
+            </form>
+          </div>
+          <!-- 帐号绑定 -->
+          <div class="layui-form layui-form-pane layui-tab-item">
+            <ul class="app-bind">
+              <li class="fly-msg app-havebind">
+                <i class="iconfont icon-qq"></i>
+                <span>已成功绑定，您可以使用QQ帐号直接登录，当然，您也可以</span>
+                <a href="javascript:;" class="acc-unbind" type="qq_id">解除绑定</a>
+                
+                <!-- <a href="" onclick="layer.msg('正在绑定微博QQ', {icon:16, shade: 0.1, time:0})" class="acc-bind" type="qq_id">立即绑定</a>
+                <span>，即可使用QQ帐号登录了</span> -->
+              </li>
+              <li class="fly-msg">
+                <i class="iconfont icon-weibo"></i>
+                <!-- <span>已成功绑定，您可以使用微博直接登录，当然，您也可以</span>
+                <a href="javascript:;" class="acc-unbind" type="weibo_id">解除绑定</a> -->
+                
+                <a href="" class="acc-weibo" type="weibo_id"  onclick="layer.msg('正在绑定微博', {icon:16, shade: 0.1, time:0})" >立即绑定</a>
+                <span>，即可使用微博帐号登录了</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{include file="forum/footer"}
+<script type="text/javascript">
+layui.use(['form', 'upload', 'element'],function(){
+  var form = layui.form()
+  ,element = layui.element()
+  ,jq = layui.jquery;
+
+  layui.upload({
+    url: '{:url("index/upload/upimage")}'
+    ,elem:'#image'
+    ,ext: 'jpg|png|gif'
+    ,area: ['100px', '100px']
+    ,before: function(input){
+      loading = layer.load(2, {
+        shade: [0.2,'#000'] //0.2透明度的白色背景
+      });
+    }
+    ,success: function(res){
+      layer.close(loading);
+      jq('input[name=userhead]').val(res.path);
+      headedit.src = "__ROOT__"+res.path;
+      layer.msg(res.msg, {icon: 1, time: 1000});
+    }
+  }); 
+
+  form.verify({
+    names: function(value){
+      if(value.length > 12){
+        return '昵称必须小于12位';
+      }
+    }
+  ,homes: function(value){
+      if(value.length > 6){
+        return '城市必须小于6位';
+      }
+    }
+  ,descrs: function(value){
+      if(value.length > 16){
+        return '签名必须小于16位';
+      }
+    }
+    ,pass: [/(.+){6,12}$/, '密码必须6到12位']
+    ,content: function(value){
+      layedit.sync(editIndex);
+    }
+  });
+
+  form.on('submit(user_set)', function(data){
+    loading = layer.load(2, {
+      shade: [0.2,'#000']
+    });
+    var param = data.field;
+    jq.post('{:url("index/user/set")}',param,function(data){
+      if(data.code == 200){
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+          location.href = '{:url("index/user/set")}';
+        });
+      }else{
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+      }
+    });
+    return false;
+  });
+
+  form.on('submit(user_setedit)', function(data){
+    loading = layer.load(2, {
+      shade: [0.2,'#000']
+    });
+    var param = data.field;
+    jq.post('{:url("index/user/setedit")}',param,function(data){
+      if(data.code == 200){
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+          location.href = '{:url("index/user/set")}';
+        });
+      }else{
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+      }
+    });
+    return false;
+  });
+
+  form.on('submit(user_headedit)', function(data){
+    loading = layer.load(2, {
+      shade: [0.2,'#000']
+    });
+    var param = data.field;
+    jq.post('{:url("index/user/headedit")}',param,function(data){
+      if(data.code == 200){
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+          location.href = '{:url("index/user/set")}';
+        });
+      }else{
+        layer.close(loading);
+        layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+      }
+    });
+    return false;
+  });
+  
+});
+</script>
+</body>
+</html>

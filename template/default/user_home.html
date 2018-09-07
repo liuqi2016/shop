@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{$member.username} - {:config('web.WEB_AUT')}</title>
+<meta name="keywords" content="我的帖子">
+<meta name="description" content="我的帖子">
+{include file="forum/header"}
+<style type="text/css">
+html body {margin-top: 65px;}
+</style>
+<div class="fly-home" style="background-image: url();">
+  <img src="__ROOT__{$member.userhead}" alt="{$member.username}">
+  <h1>
+    {$member.username}
+    {if condition="$member.sex eq 1"} <i class="iconfont icon-nan"></i>{else /} <i class="iconfont icon-nv"></i>{/if}
+  </h1>
+  <p class="fly-home-info">
+    <i class="iconfont icon-zuichun" title="积分"></i><span style="color: #FF7200;">{$member.point}</span>
+    <i class="iconfont icon-shijian"></i><span>{$member.regtime|date="Y-m-d",###} 加入</span>
+    <i class="iconfont icon-chengshi"></i><span>{if condition="$member.userhome neq ''"}{$member.userhome}{else /}中国{/if}</span>
+  </p>
+  <p class="fly-home-sign">{if condition="$member.description neq ''"}（{$member.description}）{else /}（这个人懒得留下签名）{/if}</p>
+</div>
+<div class="main fly-home-main">
+  <div class="layui-inline fly-home-jie">
+    <div class="fly-panel">
+      <h3 class="fly-panel-title">{$member.username} 最近的帖子</h3>
+      <ul class="jie-row">
+        {volist name="ThreadList" id="vo"}
+        <li>
+          {if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/trd/{$vo.id}.html" class="jie-title">{else/}<a href="__INDEX__/trd/{$vo.id}.html" class="jie-title">{/if}{$vo.title}</a>
+          <i></i>
+          <em>{$vo.time|date="Y-m-d",###}</em>
+        </li>
+        {/volist}
+      </ul>
+    </div>
+  </div>
+  <div class="layui-inline fly-home-da">
+    <div class="fly-panel">
+      <h3 class="fly-panel-title">{$member.username} 最近的评论</h3>
+      <ul class="home-jieda">
+        {volist name="CommentList" id="vo"}
+        <li>
+          <p>
+            <span>{$vo.time|date="Y-m-d",###}</span>
+            在{if condition="config('web.WEB_URL') eq 1"}<a href="__ROOT__/trd/{$vo.tid}.html">{else/}<a href="__INDEX__/trd/{$vo.tid}.html">{/if}{$vo.title}</a>中回答：
+          </p>
+          <div class="home-dacontent">
+            <?php echo mb_substr(strip_tags(htmlspecialchars_decode($vo['content'])), 0, 60, 'utf-8');?>...
+          </div>
+        </li>
+        {/volist}
+      </ul>
+    </div>
+  </div>
+</div>
+{include file="forum/footer"}
+<script type="text/javascript">
+layui.use('element', function(){
+  var element = layui.element();
+  //一些事件监听
+  element.on('tab(user)', function(data){
+    console.log(data);
+  });
+});
+</script>
+</body>
+</html>

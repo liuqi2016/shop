@@ -1,0 +1,197 @@
+{include file="index/header"}
+<body>
+<div class="fly-panel fly-panel-user">
+  <div class="tpt-admin">
+    <div class="tpt-btn">
+      <a href="{:url('robothaoquan/add')}" class="layui-btn"><i class="layui-icon">&#xe608;</i> 添加采集器</a>
+      <button style="margin-bottom: 3px;" class="layui-btn" lay-submit lay-filter="robothaoquan_collect"><i class="layui-icon">&#xe628;</i> 一键采集全自动采集</button>
+    </div>
+    <form class="layui-form" method="post">
+      <table width="100%">
+        <tr>
+          <th width="3%" align="center"><input type="checkbox" name="checkAll" lay-filter="checkAll"></th>
+          <th width="5%" align="center">采集器ID</th>
+          <th width="15%" align="center">采集名称</th>
+          <th width="15%" align="center">采集关键词</th>
+          <th width="10%" align="center">采集页数</th>
+          <th width="10%" align="center">今日采集状态</th>
+          <th width="10%" align="center">上次采集时间</th>
+          <th width="15%" align="center">基本操作</th>
+        </tr>
+        {volist name="RobothaoquanList" id="vo"}
+        <tr>
+          <td align="center"><input type="checkbox" name="ids[{$vo.id}]" lay-filter="checkOne" value="{$vo.id}"></td>
+          <td align="center">{$vo.id}</td>
+          <td align="center">{$vo.name}</td>
+          <td align="center">{$vo.keyword}</td>
+          <td align="center">{$vo.page}</td>
+          <td align="center">{if condition="$vo.lastTime eq ''"}未采集{else /}{if condition="(date('Y-m-d',$Today) neq date('Y-m-d',$vo.lastTime))"}未采集{elseif condition="(date('Y-m-d',$Today) eq date('Y-m-d',$vo.lastTime)) AND ($vo.lastPage eq '0')" /}已集采{else /}已集采{$vo.lastPage}页{/if}{/if}</td> 
+          <td align="center">{if condition="$vo.lastTime eq ''"}未采集{else /}{$vo.lastTime|date="Y-m-d",###}{/if}</td>
+          <td align="center">
+            <a class="layui-btn layui-btn-mini collect_one" member-id="{$vo.id}" title="采集" ><i class="layui-icon">&#xe628;</i> 采集</a>
+            <a class="layui-btn layui-btn-mini layui-btn-warm" href="{:url('robothaoquan/edit',array('id'=>$vo['id']))}">修改</a> 
+            <a class="layui-btn layui-btn-mini layui-btn-danger del_btn" member-id="{$vo.id}" title="删除" nickname="{$vo.name}">删除</a>
+          </td>
+        </tr>
+        {/volist}
+      </table>
+      <div class="layui-form-item">
+        <div style="margin-top: 20px;float: left;">
+          <button class="layui-btn" lay-submit lay-filter="delete">删除选中</button>
+        </div>
+      </div>      
+    </form>
+  </div>
+</div>
+{include file="index_footer"}
+<script type="text/javascript">
+layui.use('form',function(){
+  var form = layui.form()
+  ,jq = layui.jquery;
+
+  jq('.del_btn').click(function(){
+    var name = jq(this).attr('nickname');
+    var id = jq(this).attr('member-id');
+    layer.confirm('确定删除【'+name+'】?', function(index){
+      loading = layer.load(2, {
+        shade: [0.2,'#000']
+      });
+      jq.post('{:url("robothaoquan/dels")}',{'id':id},function(data){
+        if(data.code == 200){
+          layer.close(loading);
+          layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+            location.reload();
+          });
+        }else{
+          layer.close(loading);
+          layer.msg(data.msg, {icon: 2, anim: 6, time: 1000});
+        }
+      });
+    });
+  });
+
+  form.on('checkbox(checkAll)', function(data){
+    if(data.elem.checked){
+      jq("input[type='checkbox']").prop('checked',true);
+    }else{
+      jq("input[type='checkbox']").prop('checked',false);
+    }
+    form.render('checkbox');
+  });  
+
+  form.on('checkbox(checkOne)', function(data){
+    var is_check = true;
+    if(data.elem.checked){
+      jq("input[lay-filter='checkOne']").each(function(){
+        if(!jq(this).prop('checked')){ is_check = false; }
+      });
+      if(is_check){
+        jq("input[lay-filter='checkAll']").prop('checked',true);
+      }
+    }else{
+      jq("input[lay-filter='checkAll']").prop('checked',false);
+    } 
+    form.render('checkbox');
+  });
+
+  form.on('submit(delete)', function(data){
+    var is_check = false;
+    jq("input[lay-filter='checkOne']").each(function(){
+      if(jq(this).prop('checked')){ is_check = true; }
+    });
+    if(!is_check){
+      layer.msg('请选择数据', {icon: 2,anim: 6,time: 1000});
+      return false;
+    }
+    layer.confirm('确定批量删除?', function(index){
+      loading = layer.load(2, {
+        shade: [0.2,'#000']
+      });
+      var param = data.field;
+      jq.post('{:url("robothaoquan/delss")}',param,function(data){
+        if(data.code == 200){
+          layer.close(loading);
+          layer.msg(data.msg, {icon: 1, time: 1000}, function(){
+            location.reload();
+          });
+        }else{
+          layer.close(loading);
+          layer.msg(data.msg, {icon: 2,anim: 6, time: 1000});
+        }
+      });
+    });
+    return false;
+  });
+
+  var collect_layer_index = null;
+  form.on('submit(robothaoquan_collect)', function(data){
+    layer.confirm('确定开始采集?', function(index){
+      collect_layer_index = layer.open({
+        type:0,
+        content:'开始采集,正在准备数据，请稍候！',
+        btn: false,
+        area: ['300px', '150px'],
+        cancel:function(index,layero){
+          layer.close(index);
+          location.reload();
+        }
+      });
+      collect_get_all({});
+    });    
+    return false;
+  });
+  function collect_get_all(param){
+    jq.ajax({
+      url:'{:url("robothaoquan/collect_all")}',
+      data:param,
+      type:'post',
+      success:function(data){
+        $('.layui-layer-content').text(data.msg);
+        if(data.code == 200){
+          collect_get_all({id:data.id,num:data.num});
+        }
+      },
+      dataType:'json'
+    });
+  }
+
+  var collect_layer_index_one = null;
+  jq('.collect_one').click(function(){
+    var id = jq(this).attr('member-id');
+    collect_layer_index_one = layer.open({
+      type:0,
+      content:'开始采集,正在准备数据，请稍候！',
+      btn: false,
+      area: ['300px', '150px'],
+      cancel:function(index,layero){
+        layer.close(index);
+        location.reload();
+      }
+    });
+    collect_get_one({id:id});
+  });
+  function collect_get_one(param){
+    jq.ajax({
+      url:'{:url("robothaoquan/collect_one")}',
+      data:param,
+      type:'post',
+      success:function(data){
+        if(data.code == 202){
+          $('.layui-layer-content').text(data.msg);
+        }else{
+          if(data.code == 200){
+            $('.layui-layer-content').text(data.msg);
+            param.num = data.num;
+            collect_get_one(param);
+          }
+        }
+      },
+      dataType:'json'
+    });
+  }
+})
+</script>
+</body>
+</html>
+
+

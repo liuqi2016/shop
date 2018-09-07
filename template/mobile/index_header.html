@@ -1,0 +1,41 @@
+<link href="__ROOT__/favicon.ico" rel="icon" type="image/x-icon"/>
+<link rel="stylesheet" href="__ADMIN__/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="__MOBILE__/css/home.css" media="all">
+<script src="__MOBILE__/mods/jquery-1.10.2.min.js" charset="utf-8"></script>
+<script src="__MOBILE__/mods/index.js" charset="utf-8"></script>
+<script src="__ADMIN__/layui/layui.js" charset="utf-8"></script>
+<style>
+.layui-main{max-width: 1024px;width: 97%;}
+.layui-flow-more {display: inline-block;width: 100%;}
+.layui-flow-more a cite{margin: 20px 0 80px 0;}
+.layui-fixbar{bottom: 70px;}
+</style>
+{:html_entity_decode(config('web.WEB_TJCODE'))}
+</head>
+<body class="site-home" id="LAY_home" style="background-color: #f6f6f6;">
+<div class="toolbar"></div>
+<div id="header" class="layui-header header">
+  <div class="drop-down">
+    <a href="javascript:;" onclick="sidenavIn()" class="btn-left"><i class="layui-icon">&#xe649;</i></a>
+  </div>
+  <div class="search">
+    {if condition="config('web.WEB_URL') eq 1"}<form action="__ROOT__/search.html" class="fly-search">{else/}<form action="__INDEX__/search.html">{/if}
+      <span class="search-box">
+        <input autocomplete="off" placeholder="请输入想找的宝贝" type="text" name="ks" value="<?php echo input('ks');?>" required lay-verify="required" class="layui-input txt">
+      </span>
+      <button class="smt" lay-submit lay-filter="submit"><i class="layui-icon">&#xe615;</i></button>
+    </form>
+  </div>
+</div>
+<div class="sidenav" id="sidenav-toggle">
+  <a class="logo" href="/" title="{:config('web.WEB_TIT')}">
+    <img src="{:config('web.WEB_LOGO')}" alt="{:config('web.WEB_TIT')}">
+  </a>
+  <ul>
+    {volist name="CategoryList" id="vo"}
+    <li><a href="{:url('cat/'.$vo.id)}" {if condition="$cid eq $vo['id']"}class="active"{/if}>{$vo.name}</a></li>
+    {/volist}
+  </ul>
+</div>
+
+

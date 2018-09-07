@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{$Goods.title} - {:config('web.WEB_AUT')}</title>
+<meta name="keywords" content="{$Goods.keywords}">
+<meta name="description" content="{$Goods.description}">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link href="__ROOT__/favicon.ico" rel="icon" type="image/x-icon"/>
+<link rel="stylesheet" href="__ADMIN__/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="__MOBILE__/css/home.css" media="all">
+<script src="__MOBILE__/mods/jquery-1.10.2.min.js" charset="utf-8"></script>
+<script src="__MOBILE__/mods/index.js" charset="utf-8"></script>
+<script src="__ADMIN__/layui/layui.js" charset="utf-8"></script>
+<style>
+.layui-main{max-width: 1024px;width: 97%;}
+.layui-flow-more {display: inline-block;width: 100%;}
+.layui-flow-more a cite{margin: 20px 0 80px 0;}
+.layui-fixbar{bottom: 70px;}
+.layui-layer{max-width: 1024px;}
+</style>
+<script type="text/javascript">
+$(function (){
+  var listWidth = $(".list-main li").innerWidth();//取商品列表图片宽
+  $(".list-main li img").css('height',listWidth);
+})
+</script>
+</head>
+<body class="site-home" id="LAY_home" style="background-color: #f6f6f6;">
+<div class="toolbar"></div>
+<div id="header" class="layui-header header" style="position: fixed;background: none;">
+  <div class="go-back" style="width: 35px;height: 35px;margin: 8px;border-radius: 35px;background: #555;"><a href="javascript:;" onClick="javascript :history.back(-1);" style="height: 35px;line-height: 37px;"><i class="layui-icon" style="font-size: 18px;">&#xe603;</i></a></div>
+  <div class="go-home" style="width: 35px;height: 35px;margin: 8px;border-radius: 35px;background: #555;"><a href="/" style="height: 35px;
+    line-height: 37px;"><i class="layui-icon" style="font-size: 18px;">&#xe68e;</i></a></div>
+</div>
+<div class="detail">
+  <div class="goods-pic"><img src="{$Goods.pic}" alt="{$Goods.title}"></div>
+  <div class="goods-info">
+    <div class="layui-main">
+      <div class="price">
+        <div class="coupon-price">
+          <span style="font-size: 14px;">券后价<b style="font-size: 20px;"><i>￥</i>{$Goods.couponPrice}</b></span>
+        </div>
+        <div class="original-price">
+          <span style="font-size: 14px;">原价<b style="font-family: Arial"><i>￥</i>{$Goods.price}</b></span>
+        </div>
+        <div class="volume">
+          <span style="font-size: 14px;">销量<b style="font-size: 14px;">{$Goods.volume}</b></span>
+        </div>
+      </div>      
+      <h1 class="title">{$Goods.title}</h1>
+      <div class="description">
+        <i class="layui-icon">&#xe600;</i>
+        <strong>推荐理由</strong>
+        <p>{$Goods.description}</p>
+      </div>
+    </div>
+  </div> 
+  <div class="content">
+    <div class="layui-main">  
+      <div class="content-toggle" date-status="0" data-goodsid="{$Goods.numIid}">
+        <i class="layui-icon" style="color: #ff464e;">&#xe64a;</i>
+        <strong>商品图文详情</strong>
+        <span>（点击展开）</span>
+        <i class="layui-icon" style="float: right;">&#xe602;</i>
+      </div>
+    </div>   
+    <div class="content-main" id="content-main"></div> 
+  </div>
+</div>
+<div class="goods-list" style="margin:10px 0 60px 0;">
+  <div class="layui-main">
+    <fieldset><legend><a name="use">猜你喜欢</a></legend></fieldset>
+  </div>
+  <ul class="list-main" id="LAY_list">
+    {include file="public/goods"}
+    <script type="text/javascript">    
+      var listWidth = $(".list-main li").innerWidth();
+      layui.use('flow', function(){
+        var $ = layui.jquery;
+        var flow = layui.flow;
+        flow.load({
+          elem: '#LAY_list'
+          ,isLazyimg:true
+          ,done: function(page, next){ 
+            var lis = [];
+            $.get("{:url('AjaxRequest/catList')}?id={$Category.id}&sort=&page="+(page+1), function(res){
+              layui.each(res.data, function(index, item){
+                lis.push('<li><div class="goods-main"><div class="pic"><a href="'+item.url+'"><img class="lazy" src="__MOBILE__/img/goods-loading.gif" data-original="'+item.pic+'" alt="'+item.title+'" style="height:'+listWidth+'px"></a>'+item.newicon+'</div>'+item.couponAmount+'<h3 class="title"><span class="label">包邮</span>'+item.title+'</h3><div class="original-price"><span class="price"><em>￥</em>'+item.price+'</span><span class="sold">已售 <em>'+item.volume+'</em></span></div><div class="coupon-price"><span class="price"><em>￥</em>'+item.couponPrice+'</span><i class="quan-price"></i><div class="btn-buy"><a href="'+item.jumpurl+'" rel="nofollow"><em class="'+item.icon+'"></em></a></div></div></div></li>');
+              });
+              next(lis.join(''), page < res.pages);
+              $("img.lazy").lazyload({effect: "fadeIn"});
+            });
+          }
+        });
+      });
+    </script>      
+  </ul>   
+</div>
+<script type="text/javascript">
+$(function() {
+  $('.content-toggle').on('click', function() {
+    var status = $(this).attr('date-status');
+    if(status == "0"){
+      $("#content-main").attr("style","display:block");
+      $(this).attr("date-status","1");
+    }else{
+      $("#content-main").attr("style","display:none");
+      $(this).attr("date-status","0");
+    } 
+    var goodsId = $(this).attr('data-goodsId'),
+        url = "{:url('AjaxRequest/goodsDesc')}";
+    $.getJSON(url,{goodsId:goodsId},function(data){
+      if(data.status == 200){
+        $('#content-main').append(data.content);
+      }     
+    });
+  });
+});
+</script> 
+<div class="layui-footer footer">
+  <ul class="detail" id="layerOpen">
+    <li><a href="/" class="bottom_btn home">首页</a></li>
+    <li class="quan"><a href="{:url('jump/index')}?id={$Goods.id}" rel="nofollow"><i class="layui-icon">&#xe64c;</i>{if condition="$Goods.couponAmount eq 0"}前往购买{else/}领券购买{/if}</a></li>
+    <li class="tao-token"><a href="javascript:;" class="LAY_layuipro" data-method="notice"><i class="layui-icon">&#xe63a;</i>{if condition="$Goods.clickUrl eq ''"}没有淘口令{else/}淘口令购买{/if}</a></li>
+  </ul>
+</div>
+<script src="__MOBILE__/mods/clipboard.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+layui.use(['layer', 'element', 'form', 'util'], function(){
+  var $ = layui.jquery
+  ,layer = layui.layer
+  ,element = layui.element()
+  ,util = layui.util;
+  element.on('nav(layui)', function(elem){
+    console.log(elem)
+  });
+  util.fixbar();
+  var active = {
+    notice: function(){
+      $.get("{:url('AjaxRequest/taoToken')}?id={$Goods.numIid}",function(str){
+        layer.open({
+          type: 1
+          ,title: false //不显示标题栏
+          ,closeBtn: false
+          ,area: '95%'
+          ,shade: 0.8
+          ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+          ,btn: ['一键复制淘口令', '关闭窗口']
+          ,moveType: 1 //拖拽模式，0或者1
+          ,content: '<div style="padding: 15px;line-height: 22px;color: #fff;font-weight: 300;background-color: #fff;"><div style="position: absolute; width: 60px;height: 60px;top: -30px;left: 50%;margin-left: -35px;border-radius: 40px;background-repeat: no-repeat;background-position: center;background-size: cover;border: 2px solid #fff;background-image:url({$Goods.pic})"></div><ul style="margin-top: 30px;color: #000;"><li><strong>【商品】</strong>{$Goods.title}</li><li style="margin-top: 10px;color:#ff464e"><strong>【券额】</strong> {$Goods.couponAmount}元</li><li style="margin-top: 10px;color:#ff464e"><strong>【券后价】</strong> {$Goods.couponPrice}元</li></ul><textarea style="display: block;width: 100%;height: 55px;line-height: 25px;margin-top: 15px;border:0;">一键复制淘口令：'+str+'，打开【手机淘宝app】即可【领取优惠券】并购买！</textarea></div>'
+          ,success: function(layero){
+            var btn = layero.find('.layui-layer-btn');
+            btn.css('text-align', 'center');
+            btn.find('.layui-layer-btn0').attr({
+              href: 'javascript:;'
+              ,class:'clipboard layui-layer-btn0'
+              ,'data-clipboard-text':'{$Goods.title}，券后价只要：{$Goods.couponPrice}元，淘口令：'+str+'，复制这条信息，然后打开【手机淘宝app】即可【领取优惠券】并购买！'
+            });
+          }
+        });
+      });
+    }
+  };
+  $('#layerOpen .LAY_layuipro').on('click', function(){
+    var othis = $(this), method = othis.data('method');
+    active[method] ? active[method].call(this, othis) : '';
+  });
+});
+var clipboard = new Clipboard('.clipboard');
+clipboard.on('success', function(e) { 
+  layer.msg('淘口令已复制');
+  e.clearSelection();
+  window.location.href="taobao://m.taobao.com/";
+});
+clipboard.on('error', function(e) {
+  layer.msg('淘口令已复制');
+  /*layer.msg('复制失败，请手动复制');*/
+});
+</script>
+<script src="__MOBILE__/mods/jquery.lazyload.js" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+$(function() {
+  $("img.lazy").lazyload({effect: "fadeIn"});
+});
+</script>
+{:html_entity_decode(config('web.WEB_TDJ'))}
+</body>
+</html>

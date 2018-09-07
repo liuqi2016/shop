@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>20元封顶 - {:config('web.WEB_TIT')}</title>
+<meta name="keywords" content="{:config('web.WEB_KEY')}">
+<meta name="description" content="{:config('web.WEB_DES')}">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link href="__ROOT__/favicon.ico" rel="icon" type="image/x-icon"/>
+<link rel="stylesheet" href="__ADMIN__/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="__MOBILE__/css/home.css" media="all">
+<script src="__MOBILE__/mods/jquery-1.10.2.min.js" charset="utf-8"></script>
+<script src="__MOBILE__/mods/index.js" charset="utf-8"></script>
+<script src="__ADMIN__/layui/layui.js" charset="utf-8"></script>
+<style>
+.layui-main{max-width: 1024px;width: 97%;}
+.layui-flow-more {display: inline-block;width: 100%;}
+.layui-flow-more a cite{margin: 20px 0 80px 0;}
+.layui-fixbar{bottom: 70px;}
+</style>
+<script type="text/javascript">
+$(function (){
+  var listWidth = $(".list-main li").innerWidth();//取商品列表图片宽
+  $(".list-main li img").css('height',listWidth);
+})
+</script>
+{:html_entity_decode(config('web.WEB_TJCODE'))}
+</head>
+<body class="site-home" id="LAY_home" style="background-color: #f6f6f6;">
+<div class="toolbar"></div>
+<div id="header" class="layui-header header">
+  <div class="go-back"><a href="javascript:;" onClick="javascript :history.back(-1);"><i class="layui-icon">&#xe603;</i></a></div>
+  <div class="motif-title">20元封顶</div>
+  <div class="go-home"><a href="/"><i class="layui-icon">&#xe68e;</i></a></div>
+</div>
+<div class="sidenav" id="sidenav-toggle">
+  <a class="logo" href="/" title="{:config('web.WEB_TIT')}">
+    <img src="{:config('web.WEB_LOGO')}" alt="{:config('web.WEB_TIT')}">
+  </a>
+  <ul>
+    {volist name="CategoryList" id="vo"}
+    <li><a href="{:url('cat/'.$vo.id)}" {if condition="$cid eq $vo['id']"}class="active"{/if}>{$vo.name}</a></li>
+    {/volist}
+  </ul>
+</div>
+<div class="filter">
+  <div id="subnav" class="subnav" style="display: block;">
+    <div class="subnav-main">
+      <ul>
+        <li><a href="/">全部</a></li>
+        {volist name="CategoryList" id="vo"}
+        <li><a href="{:url('cat/'.$vo.id)}" {if condition="$cid eq $vo['id']"}class="active"{/if}>{$vo.name}</a></li>
+        {/volist}
+      </ul>
+    </div>
+    <div class="drop-down">
+      <a href="javascript:;" onclick="sidenavIn()" class="btn-left"><i class="layui-icon">&#xe61a;</i></a>
+    </div> 
+  </div>
+</div>
+<div class="goods-list" style="margin:10px 0 60px 0;">
+  <ul class="list-main" id="LAY_list">
+    {include file="public/goods"} 
+    <script type="text/javascript">    
+      var listWidth = $(".list-main li").innerWidth();
+      layui.use('flow', function(){
+        var $ = layui.jquery;
+        var flow = layui.flow;
+        flow.load({
+          elem: '#LAY_list'
+          ,isLazyimg:true
+          ,done: function(page, next){ 
+            var lis = [];
+            $.get("{:url('AjaxRequest/shijiuList')}?page="+(page+1), function(res){
+              layui.each(res.data, function(index, item){
+                lis.push('<li><div class="goods-main"><div class="pic"><a href="'+item.url+'"><img class="lazy" src="__MOBILE__/img/goods-loading.gif" data-original="'+item.pic+'" alt="'+item.title+'" style="height:'+listWidth+'px"></a>'+item.newicon+'</div>'+item.couponAmount+'<h3 class="title"><span class="label">包邮</span>'+item.title+'</h3><div class="original-price"><span class="price"><em>￥</em>'+item.price+'</span><span class="sold">已售 <em>'+item.volume+'</em></span></div><div class="coupon-price"><span class="price"><em>￥</em>'+item.couponPrice+'</span><i class="quan-price"></i><div class="btn-buy"><a href="'+item.jumpurl+'" rel="nofollow"><em class="'+item.icon+'"></em></a></div></div></div></li>');
+              });
+              next(lis.join(''), page < res.pages);
+              $("img.lazy").lazyload({effect: "fadeIn"});
+            });
+          }
+        });
+      });
+    </script>  
+  </ul>
+</div>
+{include file="index/footer"}
+</body>
+</html>

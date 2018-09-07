@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{:config('web.WEB_TIT')}</title>
+<meta name="keywords" content="{:config('web.WEB_KEY')}">
+<meta name="description" content="{:config('web.WEB_DES')}">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+{include file="index/header"}
+<link rel="stylesheet" href="__ADMIN__/swiper/dist/css/swiper.min.css">
+<script type="text/javascript">
+$(function (){
+  var listWidth = $(".list-main li").innerWidth();//取商品列表图片宽
+  $(".list-main li img").css('height',listWidth);
+})
+</script>
+<div class="filter">
+  <div id="subnav" class="subnav" style="display: block;">
+    <div class="subnav-main">
+      <ul>
+        <li><a href="/" class="active">全部</a></li>
+        {volist name="CategoryList" id="vo"}
+        <li><a href="{:url('cat/'.$vo.id)}" {if condition="$cid eq $vo['id']"}class="active"{/if}>{$vo.name}</a></li>
+        {/volist}
+      </ul>
+    </div>
+    <div class="drop-down">
+      <a href="javascript:;" onclick="sidenavIn()" class="btn-left"><i class="layui-icon">&#xe61a;</i></a>
+    </div> 
+  </div>
+</div>
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+      {volist name="BannerList" id="vo"}
+      {if condition="$vo.identity eq 'index-slide'"}
+      <div class="swiper-slide"><a href="{$vo.links}" target="_blank"><img src="{$vo.pic}" alt="{$vo.title}" /></a></div>
+      {/if}
+      {/volist}      
+    </div>
+    <!-- Add Pagination -->
+    <div class="swiper-pagination"></div>    
+</div>
+<div class="circle-nav">
+  <ul class="circle-nav-main">
+    {volist name="NavList" id="vo"}
+      {if condition="($vo.type eq '2') and ($vo.identity eq 'main')"}
+      <li><a href="{$vo.links}" {if condition="$vo.target eq 1"}target="_blank"{/if}><img src="{$vo.pic}" title="{$vo.name}"></a><span>{$vo.name}</span></li>
+      {/if}
+    {/volist}
+  </ul>
+</div>
+<div class="goods-list" style="margin:10px 0 60px 0;">
+  <ul class="list-main" id="LAY_list">
+    {volist name="SettopGoodsList" id="vo"}
+      <li>
+        <div class="goods-main">
+          <div class="pic">
+            <a href="{:url('dtl/'.$vo.id)}">
+              <img src="{$vo.pic}" class="lazy" alt="{$vo.title}">                             
+            </a>
+            {$vo.startTime|newicon}
+          </div>
+          <div class="quan">
+            <a href="{:url('jump/index')}?id={$vo.id}" rel="nofollow">
+              <span class="quan-info">优惠券<br><em>{$vo.couponAmount}元</em></span>
+            </a>
+          </div>
+          <h3 class="title">
+            <span class="label">包邮</span>{$vo.title}
+          </h3>
+          <div class="original-price">
+            <span class="price"><em>￥</em>{$vo.price}</span>
+            <span class="sold">已售 <em>{$vo.volume}</em></span>
+          </div>
+          <div class="coupon-price">
+            <span class="price"><em>￥</em>{$vo.couponPrice}</span>
+            <i class="quan-price"></i>
+            <div class="btn-buy">
+              <a href="{:url('jump/index')}?id={$vo.id}" rel="nofollow">
+              {if condition="$vo.userType eq 0"}
+                <em class="t-icon"></em>
+                {else/}
+                <em class="m-icon"></em>
+              {/if}
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+    {/volist}  
+    {include file="public/goods"}
+    <script type="text/javascript">    
+      var listWidth = $(".list-main li").innerWidth();
+      layui.use('flow', function(){
+        var $ = layui.jquery;
+        var flow = layui.flow;
+        flow.load({
+          elem: '#LAY_list'
+          ,isLazyimg:true
+          ,done: function(page, next){
+            var lis = [];
+            $.get("{:url('AjaxRequest/indexList')}?page="+(page+1), function(res){
+              layui.each(res.data, function(index, item){
+                lis.push('<li><div class="goods-main"><div class="pic"><a href="'+item.url+'"><img class="lazy" src="__MOBILE__/img/goods-loading.gif" data-original="'+item.pic+'" alt="'+item.title+'" style="height:'+listWidth+'px"></a>'+item.newicon+'</div>'+item.couponAmount+'<h3 class="title"><span class="label">包邮</span>'+item.title+'</h3><div class="original-price"><span class="price"><em>￥</em>'+item.price+'</span><span class="sold">已售 <em>'+item.volume+'</em></span></div><div class="coupon-price"><span class="price"><em>￥</em>'+item.couponPrice+'</span><i class="quan-price"></i><div class="btn-buy"><a href="'+item.jumpurl+'" rel="nofollow"><em class="'+item.icon+'"></em></a></div></div></div></li>');
+              });
+              next(lis.join(''), page < res.pages);
+              $("img.lazy").lazyload({effect: "fadeIn"});
+            });
+          }
+        });
+      });
+    </script>  
+  </ul>
+</div>
+<script type="text/javascript" src="__ADMIN__/swiper/dist/js/swiper.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+var swiper = new Swiper('.swiper-container', {
+  pagination: '.swiper-pagination',
+  loop : true,
+  slidesPerView: 'auto',
+  centeredSlides: true,
+  paginationClickable: true,
+  spaceBetween: 30,
+  autoplay: 2000,
+  loopedSlides: 30,
+  autoplayDisableOnInteraction : false
+});
+var windowWidth = $(".site-home").innerWidth();;//取屏幕宽
+$(".swiper-slide").css('width',windowWidth);
+$(".swiper-slide img").css('width',windowWidth);
+</script>
+{include file="index/footer"}
+</body>
+</html>
